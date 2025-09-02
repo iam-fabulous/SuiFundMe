@@ -6,17 +6,17 @@ Version: 1.0
 Date: 26 October 2023 
 Author: Timothy Idowu
 
-1. Executive Summary
+1. Executive Summary:
     Sui FundMe is envisioned as a decentralised crowdfunding platform built on the Sui blockchain, aiming to replicate and enhance the "all-or-nothing" model of traditional platforms like Kickstarter, but with the transparency, trustlessness, and borderless nature of Web3. This platform will provide a launchpad for creative dreams, particularly targeting creators in Africa who often face challenges accessing global funding avenues. By leveraging Sui's unique capabilities, SuiLaunch will empower creators to fund their projects directly from a global community of backers using SUI tokens or other crypto assets, with every transaction governed by smart contracts.
 
 2. Problem Statement
-    - Traditional crowdfunding platforms, while effective, can present limitations for creators, particularly in regions like Africa:
-    - Geographical Restrictions: Many global funding platforms have strict country eligibility requirements, excluding creators from various regions, including Nigeria, from launching projects.
-    - Centralised Control & Fees: Traditional platforms operate as intermediaries, involving platform and payment processing fees that can reduce the funds reaching creators.
-    - Lack of Transparency: While some platforms offer communication tools, the underlying financial flows are often opaque to backers.
-    - Funding Access: Creators often struggle to secure funding without relying on loans or traditional investors.
+    Traditional crowdfunding platforms, while effective, can present limitations for creators, particularly in regions like Africa
+        - Geographical Restrictions: Many global funding platforms have strict country eligibility requirements, excluding creators from various regions, including Nigeria, from launching projects.
+        - Centralised Control & Fees: Traditional platforms operate as intermediaries, involving platform and payment processing fees that can reduce the funds reaching creators.
+        - Lack of Transparency: While some platforms offer communication tools, the underlying financial flows are often opaque to backers.
+        - Funding Access: Creators often struggle to secure funding without relying on loans or traditional investors.
 
-3. Vision & Goals
+3. Vision & Goals:
     Vision: To be the leading Web3-native, decentralised crowdfunding platform that empowers creators globally, particularly across Africa, by fostering a transparent, community-powered engine for turning imagination into reality.
 
     Goals:
@@ -27,21 +27,20 @@ Author: Timothy Idowu
         - Leverage Web3 Advantages: Fully utilise Sui's speed, scalability, low fees, and object-centric model for efficient and cost-effective crowdfunding, including NFT-based rewards.
 
 
-4. Target Audience
-    - 4.1. Creators:
+4. Target Audience:
+    4.1. Creators:
         - Creative Professionals: Individuals and teams focused on projects in art, music, film, games, tech, design, books, comics, and photography.
         - Emerging Market Creators: A specific focus on creators from African nations who are currently underserved by traditional global crowdfunding platforms.
         - Web3-Native Artists: Creators interested in leveraging blockchain for unique reward mechanisms (e.g., NFTs) and direct community ownership.
         - Individuals seeking funding without the need for loans or investors.
-
+        
     4.2. Backers:
         - Community Supporters: Individuals who believe in supporting ideas and want to be part of the creative journey.
         - Crypto Enthusiasts: Users familiar with and holding SUI tokens or other compatible crypto assets, interested in Web3 innovation.
         - Early Adopters: Those looking to discover and fund innovative projects, potentially gaining exclusive access or unique digital rewards.
 
 
-5. Key Features
-
+5. Key Features:
     5.1. Creator Functionality:
         Project Creation Dashboard:
             - Intuitive UI for building campaigns.
@@ -65,7 +64,7 @@ Author: Timothy Idowu
             - Search and filtering capabilities.
         Pledge Mechanism:
             - Easy selection of reward tiers and pledging of SUI tokens or stablecoins.
-            - Clear communication that funds are only charged if the project reaches its goal (all-or-nothing).
+            - Clear communication that funds are only charged if the project reaches its goal (all-or-nothing)
         Transparency & Tracking:
             - On-chain transparency allows backers to verify funds, milestones, and delivery progress.
             - Ability to follow the project's journey through creator updates.
@@ -74,6 +73,7 @@ Author: Timothy Idowu
             - NFT Proof of Support immortalises their contribution.
         Wallet Integration:
             - Seamless connection with Sui-compatible wallets (e.g., Slush, Phantom) for pledging and receiving rewards.
+    
     5.3. Core Platform Features:
         - All-or-Nothing Funding Model: Funds are only collected and fees applied if a project successfully meets its funding goal. If not, no money changes hands, and backers are not charged.
         - Smart Contracts: Core logic for pledges, goal tracking, refunds (in case of failure), and reward distribution built entirely on Sui smart contracts.
