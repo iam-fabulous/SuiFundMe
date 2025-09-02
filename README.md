@@ -1,9 +1,18 @@
+
+# Project Title
+
+A brief description of what this project does and who it's for
+
 # SuiFundMe
 
 Product Requirements Document (PRD): Sui FundMe- Decentralised Crowdfunding on Sui
+
 Project Name: Sui FundMe
+
 Version: 1.0 
+
 Date: 26 October 2023 
+
 Author: Timothy Idowu
 
 1. Executive Summary:
@@ -11,15 +20,21 @@ Author: Timothy Idowu
 
 2. Problem Statement
     Traditional crowdfunding platforms, while effective, can present limitations for creators, particularly in regions like Africa
+        
         - Geographical Restrictions: Many global funding platforms have strict country eligibility requirements, excluding creators from various regions, including Nigeria, from launching projects.
         - Centralised Control & Fees: Traditional platforms operate as intermediaries, involving platform and payment processing fees that can reduce the funds reaching creators.
         - Lack of Transparency: While some platforms offer communication tools, the underlying financial flows are often opaque to backers.
         - Funding Access: Creators often struggle to secure funding without relying on loans or traditional investors.
 
 3. Vision & Goals:
-    Vision: To be the leading Web3-native, decentralised crowdfunding platform that empowers creators globally, particularly across Africa, by fostering a transparent, community-powered engine for turning imagination into reality.
+    
+    Vision: 
+    
+    To be the leading Web3-native, decentralised crowdfunding platform that empowers creators globally, particularly across Africa, by fostering a transparent, community-powered engine for turning imagination into reality.
 
     Goals:
+        
+        
         - Democratise Access: Provide a borderless platform for creators, especially in Africa, to access funding without geographical limitations or complex financial intermediaries.
         - Enhance Transparency & Trust: Utilise blockchain technology and smart contracts to ensure on-chain transparency for all pledges, milestones, and fund distribution, building greater trust between creators and backers.
         - Empower Creators: Offer a robust set of tools for creators to launch, promote, and manage their projects with flexibility and direct community engagement.
@@ -28,20 +43,25 @@ Author: Timothy Idowu
 
 
 4. Target Audience:
+    
     4.1. Creators:
+        
         - Creative Professionals: Individuals and teams focused on projects in art, music, film, games, tech, design, books, comics, and photography.
         - Emerging Market Creators: A specific focus on creators from African nations who are currently underserved by traditional global crowdfunding platforms.
         - Web3-Native Artists: Creators interested in leveraging blockchain for unique reward mechanisms (e.g., NFTs) and direct community ownership.
         - Individuals seeking funding without the need for loans or investors.
         
     4.2. Backers:
+        
         - Community Supporters: Individuals who believe in supporting ideas and want to be part of the creative journey.
         - Crypto Enthusiasts: Users familiar with and holding SUI tokens or other compatible crypto assets, interested in Web3 innovation.
         - Early Adopters: Those looking to discover and fund innovative projects, potentially gaining exclusive access or unique digital rewards.
 
 
 5. Key Features:
+
     5.1. Creator Functionality:
+
         Project Creation Dashboard:
             - Intuitive UI for building campaigns.
             - Ability to set a clear title, detailed description, and compelling visuals/video to showcase the idea.
@@ -59,6 +79,7 @@ Author: Timothy Idowu
             - Guidance and tools to assist creators in delivering their projects and fulfilling promised rewards.
 
     5.2. Backer Functionality:
+
         Project Discovery:
             - Ability to browse projects by category (e.g., tech, games, music, film, design) and trending status.
             - Search and filtering capabilities.
@@ -75,6 +96,7 @@ Author: Timothy Idowu
             - Seamless connection with Sui-compatible wallets (e.g., Slush, Phantom) for pledging and receiving rewards.
     
     5.3. Core Platform Features:
+
         - All-or-Nothing Funding Model: Funds are only collected and fees applied if a project successfully meets its funding goal. If not, no money changes hands, and backers are not charged.
         - Smart Contracts: Core logic for pledges, goal tracking, refunds (in case of failure), and reward distribution built entirely on Sui smart contracts.
         - Sui Blockchain Integration: Leverages Sui's parallel execution for fast transactions, object-centric model for managing NFTs and reward tiers, and low fees for global accessibility.
@@ -82,13 +104,16 @@ Author: Timothy Idowu
 
 
 6. Business Model
+
     Sui FundMe will operate on a success-based revenue model, earning revenue only from successfully funded projects.
+
         - Platform Fee: A competitive percentage cut (e.g., 5%) of the total funds successfully raised from funded projects.
         - Payment Processing (Sui Network Fees): Transaction fees are handled by the Sui network, offering significantly lower costs compared to traditional third-party payment processors.
         - No Fees for Unfunded Projects: If a project does not meet its funding goal, no money is collected, and SuiFundMe earns nothing, aligning incentives with project success.
 
 
 7. Technical Considerations
+
     - Blockchain: Sui Blockchain.
     - Smart Contract Language: Move (Sui's native smart contract language).
     - Core Smart Contracts:
@@ -120,6 +145,7 @@ Author: Timothy Idowu
 
 
 10. Buildathon Execution Plan: From Concept to Demo Day
+
     Given the 1-week buildathon timeframe, ending next Wednesday (Demo Day), with all smart contracts to be submitted this Thursday.
 
         10.1. Core Philosophy for the Buildathon
