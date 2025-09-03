@@ -119,5 +119,28 @@ module suifundme_smartcontract::suifundme_smartcontract {
     }
 
 
+    public entry fun donate(campaign: &mut Campaign, payment: Coin<SUI>, clock: &Clock, ctx: &mut TxContext) {
+        assert!(campaign.active, ECampaignInactive);
+        assert!(clock::timestamp_ms(clock) < campaign.end_time, EDeadlinePassed);
+
+        let amount = coin::value(&payment);
+        let bal = coin::into_balance(payment);
+        balance::join(&mut campaign.balance, bal);
+
+        let donor = tx_context::sender(ctx);
+        transfer::transfer(Contribution {
+            id: object::new(ctx),
+            campaign_id: object::id(campaign),
+            amount,
+        }, donor);
+
+        event::emit(Donated {
+            campaign_id: object::id(campaign),
+            donor,
+            amount,
+        });
+    }
+
+
 
 }
