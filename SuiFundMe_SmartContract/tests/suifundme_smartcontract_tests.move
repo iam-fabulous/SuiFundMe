@@ -59,3 +59,25 @@ module suifundme::suifundme_tests {
         ts::end(scenario);
     }
 
+
+    #[test]
+    #[expected_failure(abort_code = 3)]
+    fun test_claim_funds_fail_goal_not_met() {
+        let mut scenario = ts::begin(CREATOR);
+        let mut clock = clock::create_for_testing(ts::ctx(&mut scenario));
+
+        suifundme::create_campaign(GOAL, DURATION, &clock, ts::ctx(&mut scenario));
+
+        ts::next_tx(&mut scenario, CREATOR);
+        let cap = ts::take_from_sender<CreatorCap>(&scenario);
+        let mut campaign = ts::take_shared<Campaign>(&scenario);
+
+        clock::increment_for_testing(&mut clock, DURATION + 1);
+
+        suifundme::claim_funds(cap, &mut campaign, &clock, ts::ctx(&mut scenario));
+
+        // Should fail, so no return needed
+        ts::return_shared(campaign);
+        clock::destroy_for_testing(clock);
+        ts::end(scenario);
+    }
