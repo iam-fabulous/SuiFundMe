@@ -117,3 +117,38 @@ module suifundme::suifundme_tests {
         ts::end(scenario);
     }
 
+
+    #[test]
+    fun test_refund() {
+        let mut scenario = ts::begin(CREATOR);
+        let mut clock = clock::create_for_testing(ts::ctx(&mut scenario));
+
+        suifundme::create_campaign(GOAL, DURATION, &clock, ts::ctx(&mut scenario));
+
+        ts::next_tx(&mut scenario, DONOR);
+        let mut campaign = ts::take_shared<Campaign>(&scenario);
+        let payment = coin::mint_for_testing<SUI>(DONATION, ts::ctx(&mut scenario));
+        suifundme::donate(&mut campaign, payment, &clock, ts::ctx(&mut scenario));
+
+        ts::next_tx(&mut scenario, DONOR); // Switch to DONOR to retrieve Contribution
+        let contrib = ts::take_from_sender<Contribution>(&scenario);
+
+        clock::increment_for_testing(&mut clock, DURATION + 1);
+
+        // Ensure refund is called in DONOR's context
+        ts::next_tx(&mut scenario, DONOR);
+        suifundme::refund(&mut campaign, contrib, &clock, ts::ctx(&mut scenario));
+
+        // Retrieve the refunded Coin<SUI> in DONOR's context
+        ts::next_tx(&mut scenario, DONOR);
+        let refunded = ts::take_from_sender<coin::Coin<SUI>>(&scenario);
+        assert_eq(coin::value(&refunded), DONATION);
+
+        assert_eq(suifundme::campaign_balance(&campaign), 0);
+
+        ts::return_shared(campaign);
+        ts::return_to_sender(&scenario, refunded);
+        clock::destroy_for_testing(clock);
+        ts::end(scenario);
+    }
+
