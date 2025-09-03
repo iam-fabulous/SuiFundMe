@@ -87,4 +87,37 @@ module suifundme_smartcontract::suifundme_smartcontract {
     }
 
 
+    // Functions
+    public entry fun create_campaign(goal: u64, duration_ms: u64, clock: &Clock, ctx: &mut TxContext) {
+        let uid = object::new(ctx);
+        let campaign_id = object::uid_to_inner(&uid);
+        let creator = tx_context::sender(ctx);
+        let end_time = clock::timestamp_ms(clock) + duration_ms;
+
+        let campaign = Campaign {
+            id: uid,
+            creator,
+            goal,
+            balance: balance::zero(),
+            end_time,
+            active: true,
+        };
+
+        transfer::share_object(campaign);
+
+        transfer::transfer(CreatorCap {
+            id: object::new(ctx),
+            campaign_id,
+        }, creator);
+
+        event::emit(CampaignCreated {
+            campaign_id,
+            creator,
+            goal,
+            end_time,
+        });
+    }
+
+
+
 }
