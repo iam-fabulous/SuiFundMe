@@ -152,3 +152,24 @@ module suifundme::suifundme_tests {
         ts::end(scenario);
     }
 
+
+    #[test]
+    fun test_cancel_campaign() {
+        let mut scenario = ts::begin(CREATOR);
+        let clock = clock::create_for_testing(ts::ctx(&mut scenario));
+
+        suifundme::create_campaign(GOAL, DURATION, &clock, ts::ctx(&mut scenario));
+
+        ts::next_tx(&mut scenario, CREATOR);
+        let cap = ts::take_from_sender<CreatorCap>(&scenario);
+        let mut campaign = ts::take_shared<Campaign>(&scenario);
+
+        suifundme::cancel_campaign(cap, &mut campaign, ts::ctx(&mut scenario));
+
+        assert!(!suifundme::campaign_active(&campaign), 0);
+
+        ts::return_shared(campaign);
+        clock::destroy_for_testing(clock);
+        ts::end(scenario);
+    }
+}
