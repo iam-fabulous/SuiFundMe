@@ -1,9 +1,90 @@
-/*
-/// Module: suifundme_smartcontract
-module suifundme_smartcontract::suifundme_smartcontract;
-*/
+#[allow(duplicate_alias)]
 
-// For Move coding conventions, see
-// https://docs.sui.io/concepts/sui-move-concepts/conventions
+module suifundme_smartcontract::suifundme_smartcontract {
+    use sui::object::{Self, ID, UID};
+    use sui::tx_context::{Self, TxContext};
+    use sui::transfer;
+    use sui::coin::{Self, Coin};
+    use sui::balance::{Self, Balance};
+    use sui::sui::SUI;
+    use sui::clock::{Self, Clock};
+    use sui::event;
+
+    // Error codes
+    const ECampaignInactive: u64 = 0;
+    const EDeadlineNotPassed: u64 = 1;
+    const EDeadlinePassed: u64 = 2;
+    const EGoalNotMet: u64 = 3;
+    const EGoalMet: u64 = 4;
+    const EInvalidCap: u64 = 5;
+    const EInvalidContribution: u64 = 6;
+
+    // Structs
+    public struct Campaign has key {
+        id: UID,
+        creator: address,
+        goal: u64, // in MIST (10^-9 SUI)
+        balance: Balance<SUI>,
+        end_time: u64, // timestamp in ms
+        active: bool,
+    }
+
+    public struct CreatorCap has key {
+        id: UID,
+        campaign_id: ID,
+    }
+
+    public struct Contribution has key {
+        id: UID,
+        campaign_id: ID,
+        amount: u64,
+    }
+
+    // Events
+    public struct CampaignCreated has copy, drop {
+        campaign_id: ID,
+        creator: address,
+        goal: u64,
+        end_time: u64,
+    }
+
+    public struct Donated has copy, drop {
+        campaign_id: ID,
+        donor: address,
+        amount: u64,
+    }
+
+    public struct FundsClaimed has copy, drop {
+        campaign_id: ID,
+        amount: u64,
+    }
+
+    public struct Refunded has copy, drop {
+        campaign_id: ID,
+        contributor: address,
+        amount: u64,
+    }
+
+    public struct CampaignCancelled has copy, drop {
+        campaign_id: ID,
+    }
+
+    // Public getter functions for testing
+    public fun campaign_id(cap: &CreatorCap): ID {
+        cap.campaign_id
+    }
+
+    public fun contribution_amount(contrib: &Contribution): u64 {
+        contrib.amount
+    }
+
+    public fun campaign_balance(campaign: &Campaign): u64 {
+        balance::value(&campaign.balance)
+    }
+
+    public fun campaign_active(campaign: &Campaign): bool {
+        campaign.active
+    }
 
 
+}
