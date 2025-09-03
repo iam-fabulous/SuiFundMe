@@ -67,7 +67,7 @@ module suifundme_smartcontract::suifundme_smartcontract_tests {
         let mut scenario = ts::begin(CREATOR);
         let mut clock = clock::create_for_testing(ts::ctx(&mut scenario));
 
-        suifundme::create_campaign(GOAL, DURATION, &clock, ts::ctx(&mut scenario));
+        suifundme_smartcontract::create_campaign(GOAL, DURATION, &clock, ts::ctx(&mut scenario));
 
         ts::next_tx(&mut scenario, CREATOR);
         let cap = ts::take_from_sender<CreatorCap>(&scenario);
@@ -75,7 +75,7 @@ module suifundme_smartcontract::suifundme_smartcontract_tests {
 
         clock::increment_for_testing(&mut clock, DURATION + 1);
 
-        suifundme::claim_funds(cap, &mut campaign, &clock, ts::ctx(&mut scenario));
+        suifundme_smartcontract::claim_funds(cap, &mut campaign, &clock, ts::ctx(&mut scenario));
 
         // Should fail, so no return needed
         ts::return_shared(campaign);
@@ -89,27 +89,27 @@ module suifundme_smartcontract::suifundme_smartcontract_tests {
         let mut scenario = ts::begin(CREATOR);
         let mut clock = clock::create_for_testing(ts::ctx(&mut scenario));
 
-        suifundme::create_campaign(GOAL, DURATION, &clock, ts::ctx(&mut scenario));
+        suifundme_smartcontract::create_campaign(GOAL, DURATION, &clock, ts::ctx(&mut scenario));
 
         ts::next_tx(&mut scenario, DONOR);
         let mut campaign = ts::take_shared<Campaign>(&scenario);
         let payment = coin::mint_for_testing<SUI>(GOAL, ts::ctx(&mut scenario));
-        suifundme::donate(&mut campaign, payment, &clock, ts::ctx(&mut scenario));
+        suifundme_smartcontract::donate(&mut campaign, payment, &clock, ts::ctx(&mut scenario));
 
         ts::next_tx(&mut scenario, CREATOR);
         let cap = ts::take_from_sender<CreatorCap>(&scenario);
 
         clock::increment_for_testing(&mut clock, DURATION + 1);
 
-        suifundme::claim_funds(cap, &mut campaign, &clock, ts::ctx(&mut scenario));
+        suifundme_smartcontract::claim_funds(cap, &mut campaign, &clock, ts::ctx(&mut scenario));
 
         // Switch to CREATOR's context to retrieve Coin<SUI>
         ts::next_tx(&mut scenario, CREATOR);
         let received = ts::take_from_sender<coin::Coin<SUI>>(&scenario);
         assert_eq(coin::value(&received), GOAL);
 
-        assert!(!suifundme::campaign_active(&campaign), 0);
-        assert_eq(suifundme::campaign_balance(&campaign), 0);
+        assert!(!suifundme_smartcontract::campaign_active(&campaign), 0);
+        assert_eq(suifundme_smartcontract::campaign_balance(&campaign), 0);
 
         ts::return_shared(campaign);
         ts::return_to_sender(&scenario, received);
@@ -123,12 +123,12 @@ module suifundme_smartcontract::suifundme_smartcontract_tests {
         let mut scenario = ts::begin(CREATOR);
         let mut clock = clock::create_for_testing(ts::ctx(&mut scenario));
 
-        suifundme::create_campaign(GOAL, DURATION, &clock, ts::ctx(&mut scenario));
+        suifundme_smartcontract::create_campaign(GOAL, DURATION, &clock, ts::ctx(&mut scenario));
 
         ts::next_tx(&mut scenario, DONOR);
         let mut campaign = ts::take_shared<Campaign>(&scenario);
         let payment = coin::mint_for_testing<SUI>(DONATION, ts::ctx(&mut scenario));
-        suifundme::donate(&mut campaign, payment, &clock, ts::ctx(&mut scenario));
+        suifundme_smartcontract::donate(&mut campaign, payment, &clock, ts::ctx(&mut scenario));
 
         ts::next_tx(&mut scenario, DONOR); // Switch to DONOR to retrieve Contribution
         let contrib = ts::take_from_sender<Contribution>(&scenario);
@@ -137,14 +137,14 @@ module suifundme_smartcontract::suifundme_smartcontract_tests {
 
         // Ensure refund is called in DONOR's context
         ts::next_tx(&mut scenario, DONOR);
-        suifundme::refund(&mut campaign, contrib, &clock, ts::ctx(&mut scenario));
+        suifundme_smartcontract::refund(&mut campaign, contrib, &clock, ts::ctx(&mut scenario));
 
         // Retrieve the refunded Coin<SUI> in DONOR's context
         ts::next_tx(&mut scenario, DONOR);
         let refunded = ts::take_from_sender<coin::Coin<SUI>>(&scenario);
         assert_eq(coin::value(&refunded), DONATION);
 
-        assert_eq(suifundme::campaign_balance(&campaign), 0);
+        assert_eq(suifundme_smartcontract::campaign_balance(&campaign), 0);
 
         ts::return_shared(campaign);
         ts::return_to_sender(&scenario, refunded);
@@ -158,15 +158,15 @@ module suifundme_smartcontract::suifundme_smartcontract_tests {
         let mut scenario = ts::begin(CREATOR);
         let clock = clock::create_for_testing(ts::ctx(&mut scenario));
 
-        suifundme::create_campaign(GOAL, DURATION, &clock, ts::ctx(&mut scenario));
+        suifundme_smartcontract::create_campaign(GOAL, DURATION, &clock, ts::ctx(&mut scenario));
 
         ts::next_tx(&mut scenario, CREATOR);
         let cap = ts::take_from_sender<CreatorCap>(&scenario);
         let mut campaign = ts::take_shared<Campaign>(&scenario);
 
-        suifundme::cancel_campaign(cap, &mut campaign, ts::ctx(&mut scenario));
+        suifundme_smartcontract::cancel_campaign(cap, &mut campaign, ts::ctx(&mut scenario));
 
-        assert!(!suifundme::campaign_active(&campaign), 0);
+        assert!(!suifundme_smartcontract::campaign_active(&campaign), 0);
 
         ts::return_shared(campaign);
         clock::destroy_for_testing(clock);
