@@ -33,3 +33,29 @@ module suifundme::suifundme_tests {
         ts::end(scenario);
     }
 
+    #[test]
+    fun test_donate() {
+        let mut scenario = ts::begin(CREATOR);
+        let clock = clock::create_for_testing(ts::ctx(&mut scenario));
+
+        suifundme::create_campaign(GOAL, DURATION, &clock, ts::ctx(&mut scenario));
+
+        ts::next_tx(&mut scenario, DONOR);
+        let mut campaign = ts::take_shared<Campaign>(&scenario);
+        let payment = coin::mint_for_testing<SUI>(DONATION, ts::ctx(&mut scenario));
+
+        suifundme::donate(&mut campaign, payment, &clock, ts::ctx(&mut scenario));
+
+        // Switch to DONOR's context to retrieve Contribution
+        ts::next_tx(&mut scenario, DONOR);
+        let contrib = ts::take_from_sender<Contribution>(&scenario);
+        assert_eq(suifundme::contribution_amount(&contrib), DONATION);
+
+        assert_eq(suifundme::campaign_balance(&campaign), DONATION);
+
+        ts::return_shared(campaign);
+        ts::return_to_sender(&scenario, contrib);
+        clock::destroy_for_testing(clock);
+        ts::end(scenario);
+    }
+
