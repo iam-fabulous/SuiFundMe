@@ -163,5 +163,27 @@ module suifundme_smartcontract::suifundme_smartcontract {
     }
 
 
+    public entry fun refund(campaign: &mut Campaign, contrib: Contribution, clock: &Clock, ctx: &mut TxContext) {
+        assert!(contrib.campaign_id == object::id(campaign), EInvalidContribution);
+        assert!(clock::timestamp_ms(clock) > campaign.end_time, EDeadlineNotPassed);
+        assert!(balance::value(&campaign.balance) < campaign.goal, EGoalMet);
+
+        let amount = contrib.amount;
+        let coin = coin::take(&mut campaign.balance, amount, ctx);
+        let contributor = tx_context::sender(ctx);
+        transfer::public_transfer(coin, contributor);
+
+        let Contribution { id, campaign_id: _, amount: _ } = contrib;
+        object::delete(id);
+
+        event::emit(Refunded {
+            campaign_id: object::id(campaign),
+            contributor,
+            amount,
+        });
+    }
+
+
+
 
 }
