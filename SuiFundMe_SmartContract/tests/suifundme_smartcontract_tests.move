@@ -1,11 +1,11 @@
 #[test_only]
-module suifundme::suifundme_tests {
+module suifundme_smartcontract::suifundme_smartcontract_tests {
     use sui::test_scenario as ts;
     use sui::test_utils::assert_eq;
     use sui::coin;
     use sui::sui::SUI;
     use sui::clock;
-    use suifundme::suifundme::{Self, Campaign, CreatorCap, Contribution};
+    use suifundme_smartcontract::suifundme_smartcontract::{Self, Campaign, CreatorCap, Contribution};
 
     const CREATOR: address = @0x1;
     const DONOR: address = @0x2;
@@ -19,13 +19,13 @@ module suifundme::suifundme_tests {
         let mut scenario = ts::begin(CREATOR);
         let clock = clock::create_for_testing(ts::ctx(&mut scenario));
 
-        suifundme::create_campaign(GOAL, DURATION, &clock, ts::ctx(&mut scenario));
+        suifundme_smartcontract::create_campaign(GOAL, DURATION, &clock, ts::ctx(&mut scenario));
 
         ts::next_tx(&mut scenario, CREATOR);
         let cap = ts::take_from_sender<CreatorCap>(&scenario);
         let campaign = ts::take_shared<Campaign>(&scenario);
 
-        assert_eq(suifundme::campaign_id(&cap), sui::object::id(&campaign));
+        assert_eq(suifundme_smartcontract::campaign_id(&cap), sui::object::id(&campaign));
 
         ts::return_to_sender(&scenario, cap);
         ts::return_shared(campaign);
@@ -39,20 +39,20 @@ module suifundme::suifundme_tests {
         let mut scenario = ts::begin(CREATOR);
         let clock = clock::create_for_testing(ts::ctx(&mut scenario));
 
-        suifundme::create_campaign(GOAL, DURATION, &clock, ts::ctx(&mut scenario));
+        suifundme_smartcontract::create_campaign(GOAL, DURATION, &clock, ts::ctx(&mut scenario));
 
         ts::next_tx(&mut scenario, DONOR);
         let mut campaign = ts::take_shared<Campaign>(&scenario);
         let payment = coin::mint_for_testing<SUI>(DONATION, ts::ctx(&mut scenario));
 
-        suifundme::donate(&mut campaign, payment, &clock, ts::ctx(&mut scenario));
+        suifundme_smartcontract::donate(&mut campaign, payment, &clock, ts::ctx(&mut scenario));
 
         // Switch to DONOR's context to retrieve Contribution
         ts::next_tx(&mut scenario, DONOR);
         let contrib = ts::take_from_sender<Contribution>(&scenario);
-        assert_eq(suifundme::contribution_amount(&contrib), DONATION);
+        assert_eq(suifundme_smartcontract::contribution_amount(&contrib), DONATION);
 
-        assert_eq(suifundme::campaign_balance(&campaign), DONATION);
+        assert_eq(suifundme_smartcontract::campaign_balance(&campaign), DONATION);
 
         ts::return_shared(campaign);
         ts::return_to_sender(&scenario, contrib);
