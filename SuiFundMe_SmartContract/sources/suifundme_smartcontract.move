@@ -184,6 +184,18 @@ module suifundme_smartcontract::suifundme_smartcontract {
     }
 
 
+    public entry fun cancel_campaign(cap: CreatorCap, campaign: &mut Campaign, _ctx: &mut TxContext) {
+        assert!(cap.campaign_id == object::id(campaign), EInvalidCap);
+        assert!(campaign.active, ECampaignInactive);
 
+        campaign.active = false;
 
+        let CreatorCap { id, campaign_id: _ } = cap;
+        object::delete(id);
+
+        event::emit(CampaignCancelled {
+            campaign_id: object::id(campaign),
+        });
+    }
 }
+
