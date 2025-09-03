@@ -33,6 +33,7 @@ module suifundme::suifundme_tests {
         ts::end(scenario);
     }
 
+
     #[test]
     fun test_donate() {
         let mut scenario = ts::begin(CREATOR);
@@ -81,3 +82,38 @@ module suifundme::suifundme_tests {
         clock::destroy_for_testing(clock);
         ts::end(scenario);
     }
+
+
+    #[test]
+    fun test_claim_funds_success() {
+        let mut scenario = ts::begin(CREATOR);
+        let mut clock = clock::create_for_testing(ts::ctx(&mut scenario));
+
+        suifundme::create_campaign(GOAL, DURATION, &clock, ts::ctx(&mut scenario));
+
+        ts::next_tx(&mut scenario, DONOR);
+        let mut campaign = ts::take_shared<Campaign>(&scenario);
+        let payment = coin::mint_for_testing<SUI>(GOAL, ts::ctx(&mut scenario));
+        suifundme::donate(&mut campaign, payment, &clock, ts::ctx(&mut scenario));
+
+        ts::next_tx(&mut scenario, CREATOR);
+        let cap = ts::take_from_sender<CreatorCap>(&scenario);
+
+        clock::increment_for_testing(&mut clock, DURATION + 1);
+
+        suifundme::claim_funds(cap, &mut campaign, &clock, ts::ctx(&mut scenario));
+
+        // Switch to CREATOR's context to retrieve Coin<SUI>
+        ts::next_tx(&mut scenario, CREATOR);
+        let received = ts::take_from_sender<coin::Coin<SUI>>(&scenario);
+        assert_eq(coin::value(&received), GOAL);
+
+        assert!(!suifundme::campaign_active(&campaign), 0);
+        assert_eq(suifundme::campaign_balance(&campaign), 0);
+
+        ts::return_shared(campaign);
+        ts::return_to_sender(&scenario, received);
+        clock::destroy_for_testing(clock);
+        ts::end(scenario);
+    }
+
