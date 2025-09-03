@@ -142,5 +142,26 @@ module suifundme_smartcontract::suifundme_smartcontract {
     }
 
 
+    public entry fun claim_funds(cap: CreatorCap, campaign: &mut Campaign, clock: &Clock, ctx: &mut TxContext) {
+        assert!(cap.campaign_id == object::id(campaign), EInvalidCap);
+        assert!(clock::timestamp_ms(clock) > campaign.end_time, EDeadlineNotPassed);
+        assert!(balance::value(&campaign.balance) >= campaign.goal, EGoalNotMet);
+
+        let amount = balance::value(&campaign.balance);
+        let coin = coin::take(&mut campaign.balance, amount, ctx);
+        transfer::public_transfer(coin, campaign.creator);
+
+        campaign.active = false;
+
+        let CreatorCap { id, campaign_id: _ } = cap;
+        object::delete(id);
+
+        event::emit(FundsClaimed {
+            campaign_id: object::id(campaign),
+            amount,
+        });
+    }
+
+
 
 }
