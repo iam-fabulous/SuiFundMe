@@ -55,7 +55,7 @@ export default function ConnectWalletPage() {
 
         {/* Footer - Also a good candidate for a reusable component */}
         <footer className="p-6 text-center text-xs text-gray-500">
-          <p>© 2024 SuiFundMe. All rights reserved.</p>
+          <p>© 2025 SuiFundMe. All rights reserved.</p>
         </footer>
       </div>
     </div>
