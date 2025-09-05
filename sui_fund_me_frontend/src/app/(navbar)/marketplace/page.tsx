@@ -6,12 +6,12 @@ import { Button } from '@/components/ui/button';
 
 // NOTE: This is a placeholder function. You will need to replace this with
 // actual wallet connection logic using a library like @mysten/sui.
-const handleConnectWallet = () => {
-  console.log('Connect Wallet button clicked from Project Discovery Page');
-  // TODO: Add real wallet connection logic here, e.g.,
-  // const wallet = getWalletProvider();
-  // wallet.connect();
-};
+// const handleConnectWallet = () => {
+//   console.log('Connect Wallet button clicked from Project Discovery Page');
+//   // TODO: Add real wallet connection logic here, e.g.,
+//   // const wallet = getWalletProvider();
+//   // wallet.connect();
+// };
 
 export default function ProjectDiscoveryPage() {
   // NOTE: This array is a hardcoded mockup. In a real application, you would
