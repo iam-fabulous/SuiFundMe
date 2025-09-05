@@ -14,10 +14,12 @@ export default function layout({
     <div>
         <Providers>
             <Navbar />
-            {children}
+            <main className="pt-20">
+                {children}
+            </main>
         </Providers>
-          
-          
+
+
       </div>
   
   );

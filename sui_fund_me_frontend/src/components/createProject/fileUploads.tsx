@@ -53,7 +53,7 @@ export function FileUpload({ onFilesChange, acceptedTypes = "image/*,video/*", m
       <div
         {...getRootProps()}
         className={cn(
-          "border-2 border-dashed border-border rounded-lg p-8 text-center cursor-pointer transition-colors",
+          "border-2 border-dashed border-border rounded-lg p-8 mb-5 text-center cursor-pointer transition-colors",
           isDragActive && "border-primary bg-primary/5",
           files.length >= maxFiles && "opacity-50 cursor-not-allowed",
         )}
@@ -90,7 +90,7 @@ export function FileUpload({ onFilesChange, acceptedTypes = "image/*,video/*", m
                   onClick={() => removeFile(index)}
                   className="text-muted-foreground hover:text-destructive"
                 >
-                  <X className="h-4 w-4" />
+                  <X className="h-4 w-4 text-white" />
                 </Button>
               </div>
             ))}

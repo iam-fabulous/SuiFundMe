@@ -61,19 +61,23 @@ export default function RewardTiersPage() {
   const isFormValid = rewardTiers.some((tier) => tier.title.trim() && tier.amount.trim() && tier.description.trim())
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="relative size-full min-h-screen overflow-x-hidden">
       <main className="container mx-auto px-4 py-8 max-w-4xl">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Create Your Project</h1>
-          <p className="text-muted-foreground">Let`s get started on the basics.</p>
+        <div className="absolute inset-0 -z-10">
+          <div className="bg-[url('/images/image-2.png')] bg-cover bg-center bg-no-repeat absolute inset-0 size-full"></div>
+          <div className="absolute inset-0 bg-black opacity-50"></div>
+        </div>
+        <div className="mb-8 mt-10">
+          <h1 className="text-3xl font-bold text-white mb-2">Create Your Project</h1>
+          <p className="text-white">Let`s get started on the basics.</p>
         </div>
 
         <ProgressBar currentStep={state.currentStep} totalSteps={4} />
 
         <div className="mt-8">
           <div className="bg-card rounded-lg p-6 border border-border">
-            <h2 className="text-xl font-semibold text-card-foreground mb-4">Reward Tiers</h2>
-            <p className="text-muted-foreground mb-6">
+            <h2 className="text-xl font-bold text-card-foreground mb-4">Reward Tiers</h2>
+            <p className="text-muted-foreground font-semibold mb-6">
               Create reward tiers to incentivize your backers. Each tier should offer something valuable in return for
               their support.
             </p>
@@ -93,24 +97,24 @@ export default function RewardTiersPage() {
               <Button
                 variant="outline"
                 onClick={addRewardTier}
-                className="w-full border-dashed border-2 border-border hover:border-primary hover:bg-primary/5 bg-transparent"
+                className="w-full border-dashed font-bold border-2 border-border hover:border-primary hover:bg-primary/5 bg-transparent"
               >
-                <Plus className="mr-2 h-4 w-4" />
+                <Plus className="mr-2 h-4 w-4 font-bold" />
                 Add Another Reward Tier
               </Button>
             </div>
           </div>
         </div>
 
-        <div className="flex justify-between mt-8">
-          <Button variant="outline" onClick={handleBack}>
+        <div className="flex justify-between mt-10 mb-20">
+          <Button onClick={handleBack} className="bg-green-300 text-black hover:bg-black hover:text-white">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back
           </Button>
           <Button
             onClick={handleContinue}
             disabled={!isFormValid}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground"
+            className="bg-blue-600 hover:bg-primary/90 text-white font-semibold"
           >
             Save & Continue
             <ArrowRight className="ml-2 h-4 w-4" />

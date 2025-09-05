@@ -62,7 +62,7 @@ export function RewardTier({ tier, index, onUpdate, onRemove, canRemove }: Rewar
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <div>
-          <Label htmlFor={`amount-${tier.id}`} className="text-foreground">
+          <Label htmlFor={`amount-${tier.id}`} className="text-foreground font-bold">
             Reward Amount
           </Label>
           <div className="relative mt-2">
@@ -79,7 +79,7 @@ export function RewardTier({ tier, index, onUpdate, onRemove, canRemove }: Rewar
         </div>
 
         <div>
-          <Label htmlFor={`title-${tier.id}`} className="text-foreground">
+          <Label htmlFor={`title-${tier.id}`} className="text-foreground font-bold">
             Reward Title
           </Label>
           <Input
@@ -93,7 +93,7 @@ export function RewardTier({ tier, index, onUpdate, onRemove, canRemove }: Rewar
       </div>
 
       <div className="mb-4">
-        <Label htmlFor={`description-${tier.id}`} className="text-foreground">
+        <Label htmlFor={`description-${tier.id}`} className="text-foreground font-bold">
           Description
         </Label>
         <Textarea
@@ -105,7 +105,7 @@ export function RewardTier({ tier, index, onUpdate, onRemove, canRemove }: Rewar
         />
       </div>
 
-      <div className="flex items-center space-x-3 mb-4">
+      <div className="flex items-center font-bold space-x-3 mb-4">
         <Switch id={`nft-${tier.id}`} checked={tier.isNFT} onCheckedChange={handleToggleNFT} />
         <Label htmlFor={`nft-${tier.id}`} className="text-foreground">
           This reward is an NFT

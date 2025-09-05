@@ -30,21 +30,24 @@ export default function ReviewPage() {
     // Here you would typically submit to your backend
     alert("Project created successfully!")
     dispatch({ type: "RESET_PROJECT" })
-    router.push("/")
+    router.push("/marketplace")
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="relative size-full min-h-screen overflow-x-hidden">
       <main className="container mx-auto px-4 py-8 max-w-4xl">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Create Your Project</h1>
-          <p className="text-muted-foreground">Review your project before publishing.</p>
+        <div className="absolute inset-0 -z-10">
+          <div className="bg-[url('/images/image-2.png')] bg-cover bg-center bg-no-repeat absolute inset-0 size-full"></div>
+          <div className="absolute inset-0 bg-black opacity-50"></div>
+        </div>
+        <div className="mb-8 mt-10">
+          <h1 className="text-3xl font-bold text-white mb-2">Create Your Project</h1>
+          <p className="text-white">Review your project before publishing.</p>
         </div>
 
         <ProgressBar currentStep={state.currentStep} totalSteps={4} />
 
         <div className="mt-8 space-y-6">
-          {/* Project Details */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
@@ -58,7 +61,6 @@ export default function ReviewPage() {
             </CardContent>
           </Card>
 
-          {/* Uploaded Files */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
@@ -82,7 +84,6 @@ export default function ReviewPage() {
             </CardContent>
           </Card>
 
-          {/* Reward Tiers */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
@@ -111,12 +112,12 @@ export default function ReviewPage() {
           </Card>
         </div>
 
-        <div className="flex justify-between mt-8">
-          <Button variant="outline" onClick={handleBack}>
+        <div className="flex justify-between mt-10 mb-20">
+          <Button onClick={handleBack} className="bg-green-300 text-black hover:bg-black hover:text-white">
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back
           </Button>
-          <Button onClick={handleSubmit} className="bg-primary hover:bg-primary/90 text-primary-foreground">
+          <Button onClick={handleSubmit} className="bg-blue-600 hover:bg-primary/90 text-white font-semibold">
             Publish Project
           </Button>
         </div>
