@@ -1,8 +1,9 @@
 'use client';
 
+import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
-export default function ConnectWalletPage() {
+export default function Home() {
   return (
     <div className="relative flex size-full min-h-screen flex-col dark group/design-root overflow-x-hidden">
        {/* Background Image Layer */}
@@ -17,17 +18,17 @@ export default function ConnectWalletPage() {
         {/* Header - A good candidate for a reusable component */}
         <header className="p-6">
           <div className="flex items-center justify-between">
-            <Link href="#" className="text-2xl font-bold tracking-tighter">
+            <Link href="#" className="text-2xl text-white font-bold tracking-tighter">
               SuiFundMe
             </Link>
             <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
-              <Link href="#" className="hover:text-sui-primary transition-colors">Explore</Link>
-              <Link href="#" className="hover:text-sui-primary transition-colors">Start a Project</Link>
-              <Link href="#" className="hover:text-sui-primary transition-colors">How It Works</Link>
+              <Link href="#" className="text-white transition-colors">Explore</Link>
+              <Link href="/createProject" className="text-white transition-colors">Start a Project</Link>
+              <Link href="#" className="text-white transition-colors">How It Works</Link>
             </nav>
-            <button className="md:hidden">
-              <span className="material-symbols-outlined">menu</span>
-            </button>
+            <Button className="md:hidden">
+              <span className="material-symbols-outlined text-white">menu</span>
+            </Button>
           </div>
         </header>
 
@@ -52,7 +53,7 @@ export default function ConnectWalletPage() {
 
         {/* Footer - Also a good candidate for a reusable component */}
         <footer className="p-6 text-center text-xs text-gray-500">
-          <p>© 2024 SuiFundMe. All rights reserved.</p>
+          <p>© 2025 SuiFundMe. All rights reserved.</p>
         </footer>
       </div>
     </div>
