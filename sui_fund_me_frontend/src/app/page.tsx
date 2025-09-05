@@ -9,7 +9,7 @@ export default function Home() {
        {/* Background Image Layer */}
       <div className="absolute inset-0 -z-10">
         <div 
-          className="bg-[url('/images/image-1.jpg')] bg-cover bg-center bg-no-repeat absolute inset-0 size-full"
+          className="bg-[url('/images/image-1.png')] bg-cover bg-center bg-no-repeat absolute inset-0 size-full"
         ></div>
         {/* Semi-transparent Overlay for Readability */}
         <div className="absolute inset-0 bg-black opacity-50"></div>

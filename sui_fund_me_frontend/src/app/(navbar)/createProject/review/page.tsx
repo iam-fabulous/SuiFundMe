@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button"
 import { useProject } from "@/components/contexts/project-contexts"
 import { ProgressBar } from "@/components/createProject/progressBar"
 import { ArrowLeft, CheckCircle, ImageIcon, Video } from "lucide-react"
-import { Header } from "@/components/createProject/createProject_header"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export default function ReviewPage() {
@@ -36,8 +35,6 @@ export default function ReviewPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
-
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-2">Create Your Project</h1>

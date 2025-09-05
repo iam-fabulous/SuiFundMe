@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button"
 import { ArrowLeft, ArrowRight, Plus } from "lucide-react"
 import { RewardTier } from "@/components/createProject/reward-tier"
 import { ProgressBar } from "@/components/createProject/progressBar"
-import { Header } from "@/components/createProject/createProject_header"
 import { useProject, type RewardTier as RewardTierType } from "@/components/contexts/project-contexts"
 
 export default function RewardTiersPage() {
@@ -63,8 +62,6 @@ export default function RewardTiersPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
-
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-2">Create Your Project</h1>

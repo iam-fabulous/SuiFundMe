@@ -1,14 +1,14 @@
 "use client"
 
 import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
-import { FileUpload } from "@/components/createProject/fileUploads"
-import { Trash2, Edit3, Check } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
+import { Switch } from "@/components/ui/switch"
+import { Button } from "@/components/ui/button"
+import { Textarea } from "@/components/ui/textarea"
+import { Trash2, Edit3, Check } from "lucide-react"
+import { FileUpload } from "@/components/createProject/fileUploads"
 
 interface RewardTierData {
   id: string

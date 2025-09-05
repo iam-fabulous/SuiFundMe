@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button"
 import { FileUpload } from "@/components/createProject/fileUploads"
 import { useProject } from "@/components/contexts/project-contexts"
 import { ProgressBar } from "@/components/createProject/progressBar"
-import { Header } from "@/components/createProject/createProject_header"
 
 export default function CreateProjectPage() {
   const router = useRouter()
@@ -25,9 +24,14 @@ export default function CreateProjectPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
-
       <main className="container mx-auto px-4 py-8 max-w-4xl">
+        <div className="absolute inset-0 -z-10">
+        <div 
+          className="bg-[url('/images/image-1.png')] bg-cover bg-center bg-no-repeat absolute inset-0 size-full"
+        ></div>
+        {/* Semi-transparent Overlay for Readability */}
+        <div className="absolute inset-0 bg-black opacity-50"></div>
+      </div>
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-2">Create Your Project</h1>
           <p className="text-muted-foreground">Let`s get started on the basics.</p>

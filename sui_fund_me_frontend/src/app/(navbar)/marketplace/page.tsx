@@ -69,7 +69,7 @@ export default function ProjectDiscoveryPage() {
               {projects.map((project) => (
                 <div key={project.id} className="flex flex-col gap-4 rounded-lg bg-gray-600 overflow-hidden group transition-transform duration-300 hover:-translate-y-1">
                   {/* NOTE: Using an img tag instead of inline background image style to follow CSS best practices */}
-                  <Image src={project.imageUrl} alt={project.name} className="w-full aspect-video object-cover" />
+                  <Image src={project.imageUrl} alt={project.name} width={300} height={169} className="w-full aspect-video object-cover" />
                   <div className="p-4 flex flex-col gap-3">
                     <h3 className="text-white text-base font-bold leading-snug">{project.name}</h3>
                     <div className="space-y-2">

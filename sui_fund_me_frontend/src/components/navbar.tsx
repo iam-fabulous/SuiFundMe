@@ -46,8 +46,8 @@ export default function Navbar() {
       </Link>
 
         <nav className="hidden md:flex items-center gap-8">
-          <a className="text-gray-400 hover:text-white transition-colors text-sm font-medium leading-normal" href="#">Explore</a>
-          <a className="text-gray-400 hover:text-white transition-colors text-sm font-medium leading-normal" href="#">Start a project</a>
+          <Link href="" className="text-gray-400 hover:text-white transition-colors text-sm font-medium leading-normal">Explore</Link>
+          <Link href="" className="text-gray-400 hover:text-white transition-colors text-sm font-medium leading-normal">Start a project</Link>
         </nav>
 
       <button
