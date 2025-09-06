@@ -6,6 +6,7 @@ import {
   useWallets,
   useCurrentAccount,
 } from "@mysten/dapp-kit";
+import Link from "next/link";
 
 export default function Navbar() {
   const { mutate: connect } = useConnectWallet();
@@ -40,9 +41,9 @@ export default function Navbar() {
 
   return (
     <header className="flex items-center justify-between px-6 py-4 bg-gray-900">
-      <a href="/" className="text-xl font-bold text-white">
+      <Link href="/" className="text-xl font-bold text-white">
         SuiFundMe
-      </a>
+      </Link>
 
         <nav className="hidden md:flex items-center gap-8">
           <a className="text-gray-400 hover:text-white transition-colors text-sm font-medium leading-normal" href="#">Explore</a>
