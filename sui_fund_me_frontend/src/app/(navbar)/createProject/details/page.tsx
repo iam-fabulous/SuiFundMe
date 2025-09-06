@@ -2,13 +2,13 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { ProgressBar } from "@/components/createProject/progressBar"
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
+import { Button } from "@/components/ui/button"
+import { Textarea } from "@/components/ui/textarea"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 import { useProject } from "@/components/contexts/project-contexts"
+import { ProgressBar } from "@/components/createProject/progressBar"
 
 export default function ProjectDetailsPage() {
   const router = useRouter()

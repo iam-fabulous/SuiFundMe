@@ -1,18 +1,17 @@
 'use client';
 
-import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 // The original import for 'next/link' has been removed as it caused a compilation error.
 // We are now using standard <a> tags for navigation.
 
 // NOTE: This is a placeholder function. You will need to replace this with
 // actual wallet connection logic using a library like @mysten/sui.
-// const handleConnectWallet = () => {
-//   console.log('Connect Wallet button clicked from Project Discovery Page');
-//   // TODO: Add real wallet connection logic here, e.g.,
-//   // const wallet = getWalletProvider();
-//   // wallet.connect();
-// };
+const handleConnectWallet = () => {
+  console.log('Connect Wallet button clicked from Project Discovery Page');
+  // TODO: Add real wallet connection logic here, e.g.,
+  // const wallet = getWalletProvider();
+  // wallet.connect();
+};
 
 export default function ProjectDiscoveryPage() {
   // NOTE: This array is a hardcoded mockup. In a real application, you would
@@ -68,13 +67,15 @@ export default function ProjectDiscoveryPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-4">
               {projects.map((project) => (
                 <div key={project.id} className="flex flex-col gap-4 rounded-lg bg-gray-600 overflow-hidden group transition-transform duration-300 hover:-translate-y-1">
-                  {/* NOTE: Using an img tag instead of inline background image style to follow CSS best practices */}
-                  <Image src={project.imageUrl} alt={project.name} width={300} height={169} className="w-full aspect-video object-cover" />
+                  {/* NOTE: Using inline style for the background image is functional, but
+                  ensure the images exist in your public directory.
+                  A better approach would be to use a component and pass the image URL as a prop. */}
+                  <div className="w-full bg-center bg-no-repeat aspect-video bg-cover" style={{ backgroundImage: `url("${project.imageUrl}")` }}></div>
                   <div className="p-4 flex flex-col gap-3">
                     <h3 className="text-white text-base font-bold leading-snug">{project.name}</h3>
                     <div className="space-y-2">
                       <div className="w-full bg-gray-700 rounded-full h-2.5">
-                        <div className={`bg-blue-500 h-2.5 rounded-full neon-blue-shadow w-[${project.funded}%]`}></div>
+                        <div className="bg-blue-500 h-2.5 rounded-full neon-blue-shadow" style={{ width: `${project.funded}%` }}></div>
                       </div>
                       <div className="flex justify-between items-center text-xs font-medium">
                         <span className="text-blue-500">{project.funded}% Funded</span>
