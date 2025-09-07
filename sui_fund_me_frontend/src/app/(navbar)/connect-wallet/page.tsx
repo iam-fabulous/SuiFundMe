@@ -1,7 +1,7 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { WalletIcon } from '@/components/wallet-icon';
+import { Button } from '../../../components/ui/button';
+import { WalletIcon } from '../../../components/wallet-icon';
 import Link from 'next/link';
 
 // You will need to implement the actual wallet connection logic here

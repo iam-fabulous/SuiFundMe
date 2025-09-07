@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { fetchProjectById } from "@/lib/sui";
+import { fetchProjectById } from "../../../../lib/sui";
 
 // Mock fallback for detail pages
 const mockProjects: Record<string, any> = {

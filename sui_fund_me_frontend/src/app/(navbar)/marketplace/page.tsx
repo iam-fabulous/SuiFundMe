@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '../../../components/ui/button';
 // The original import for 'next/link' has been removed as it caused a compilation error.
 // We are now using standard <a> tags for navigation.
 

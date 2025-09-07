@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { fetchProjectsFromChain } from "@/lib/sui";
-import { getCachedProjects, setCachedProjects } from "@/lib/cache";
+import { fetchProjectsFromChain } from "../../../lib/sui";
+import { getCachedProjects, setCachedProjects } from "../../../lib/cache";
 
 export async function GET() {
   try {

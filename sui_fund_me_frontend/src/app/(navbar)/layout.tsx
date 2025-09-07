@@ -1,5 +1,5 @@
 
-import Navbar from "@/components/navbar";
+import Navbar from "../../components/navbar";
 import Providers from "../../components/providers";
 
 
