@@ -9,6 +9,8 @@ module suifundme_smartcontract::suifundme_smartcontract {
     use sui::sui::SUI;
     use sui::clock::{Self, Clock};
     use sui::event;
+    use std::string::{Self, String};
+    use std::vector;
 
     // Error codes
     const ECampaignInactive: u64 = 0;
@@ -198,4 +200,8 @@ module suifundme_smartcontract::suifundme_smartcontract {
         });
     }
 }
+
+
+
+
 

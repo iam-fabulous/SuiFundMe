@@ -3,7 +3,11 @@ build/*
 .coverage*
 
 # Ignore frontend folder
-sui_fund_me_frontend/
+# sui_fund_me_frontend/
+
+#Ignore Unused File
+working_suifundme
+
 
 # Ignore ENV files
 .env
