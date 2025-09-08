@@ -48,6 +48,13 @@ module suifundme_smartcontract::suifundme_smartcontract {
         amount: u64,
     }
 
+    public struct RewardTier has store {
+        name: String,
+        min_amount: u64,
+        description: String,
+    }
+
+
     // Events
     public struct CampaignCreated has copy, drop {
         campaign_id: ID,
