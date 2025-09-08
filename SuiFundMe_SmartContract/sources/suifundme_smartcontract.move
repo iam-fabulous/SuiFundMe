@@ -20,6 +20,9 @@ module suifundme_smartcontract::suifundme_smartcontract {
     const EGoalMet: u64 = 4;
     const EInvalidCap: u64 = 5;
     const EInvalidContribution: u64 = 6;
+    const EInvalidTier: u64 = 7;
+    const EInsufficientAmount: u64 = 8;
+    const ETierLengthsMismatch: u64 = 9;
 
     // Structs
     public struct Campaign has key {

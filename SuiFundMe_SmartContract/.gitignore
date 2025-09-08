@@ -6,7 +6,7 @@ build/*
 # sui_fund_me_frontend/
 
 #Ignore Unused File
-working_suifundme
+SuiFundMe_SmartContract/sources/working_suifundme.move
 
 
 # Ignore ENV files
