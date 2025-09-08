@@ -2,23 +2,34 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import { ChainProject, fetchProjectById, pledgeToProject } from "../../../lib/sui";
+import Image from "next/image";
+import { useSignAndExecuteTransaction } from '@mysten/dapp-kit';
 
+
+
+// type ProjectApiResponse = ChainProject | { error: string };
 export default function ProjectDetailPage() {
   const params = useParams();
   const projectId = params?.id as string;
 
-  const [project, setProject] = useState<any>(null);
+  const [project, setProject] = useState<ChainProject | null>(null);
   const [loading, setLoading] = useState(true);
+  const [pledging, setPledging] = useState(false);
 
-  useEffect(() => {
+  // ✅ hook gives you the signer function
+  const { mutateAsync: signAndExecuteTransaction } =
+    useSignAndExecuteTransaction();
+
+   useEffect(() => {
     async function loadProject() {
       try {
         setLoading(true);
-        const res = await fetch(`/api/projects/${projectId}`);
-        const data = await res.json();
+        const data = await fetchProjectById(projectId);
         setProject(data);
       } catch (err) {
-        console.error("❌ Failed to load project detail:", err);
+        console.error("Failed to load project detail:", err);
+        setProject(null);
       } finally {
         setLoading(false);
       }
@@ -27,14 +38,29 @@ export default function ProjectDetailPage() {
     if (projectId) loadProject();
   }, [projectId]);
 
+
+  async function handlePledge() {
+  try {
+    setPledging(true); // start loading
+    await pledgeToProject(projectId, 10, signAndExecuteTransaction);
+  } catch (err) {
+    console.error("Pledge failed:", err);
+    alert("Failed to pledge. Please try again.");
+  } finally {
+    setPledging(false); // stop loading
+  }
+}
+
   if (loading) return <p className="p-6 text-gray-400">Loading project...</p>;
   if (!project) return <p className="p-6 text-red-500">Project not found.</p>;
 
   return (
     <div className="p-6 max-w-4xl mx-auto text-white">
-      <img
+      <Image
         src={project.imageUrl}
         alt={project.name}
+        width={800}
+        height={400}
         className="w-full rounded-lg mb-6"
       />
       <h1 className="text-3xl font-bold mb-2">{project.name}</h1>
@@ -58,9 +84,18 @@ export default function ProjectDetailPage() {
           style={{ width: `${project.funded}%` }}
         ></div>
       </div>
-      <p className="text-sm text-gray-400">
+      <p className="text-sm text-gray-400 mb-6">
         {project.funded}% funded — {project.daysLeft} days left
       </p>
+
+      {/* Support Button */}
+      <button
+        onClick={handlePledge}
+        disabled={pledging}
+        className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold shadow-md transition disabled:opacity-50"
+      >
+        {pledging ? "Pledging..." : "Support this Project"}
+      </button>
     </div>
   );
 }

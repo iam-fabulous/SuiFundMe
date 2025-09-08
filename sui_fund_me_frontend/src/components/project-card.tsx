@@ -1,8 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { ChainProject } from "@/lib/sui";
 
-export default function ProjectCard({ project }: { project: any }) {
+interface ProjectCardProps {
+  project: ChainProject;
+}
+
+export default function ProjectCard({ project }: ProjectCardProps ) {
   return (
     <Link href={`/projects/${project.id}`}>
       <div className="flex flex-col gap-4 rounded-lg bg-gray-600 overflow-hidden group transition-transform duration-300 hover:-translate-y-1 cursor-pointer">

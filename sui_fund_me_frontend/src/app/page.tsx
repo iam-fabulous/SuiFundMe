@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
+// import { Button } from '../components/ui/button';
 import Link from 'next/link';
 
 export default function Home() {
@@ -22,9 +22,9 @@ export default function Home() {
               <Link href="/createProject" className="text-white transition-colors">Start a Project</Link>
               <Link href="#" className="text-white transition-colors">How It Works</Link>
             </nav>
-            <Button className="md:hidden">
+            <button className="md:hidden">
               <span className="material-symbols-outlined text-white">menu</span>
-            </Button>
+            </button>
           </div>
         </header>
 
