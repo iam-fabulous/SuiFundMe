@@ -32,6 +32,9 @@ module suifundme_smartcontract::suifundme_smartcontract {
         balance: Balance<SUI>,
         end_time: u64, // timestamp in ms
         active: bool,
+        description: String,
+        media_blob_id: String,
+        tiers: vector<RewardTier>,
     }
 
     public struct CreatorCap has key {
