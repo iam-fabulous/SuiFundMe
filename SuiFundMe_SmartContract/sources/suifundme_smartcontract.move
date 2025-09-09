@@ -61,6 +61,9 @@ module suifundme_smartcontract::suifundme_smartcontract {
         creator: address,
         goal: u64,
         end_time: u64,
+        description: String,
+        media_blob_id: String,
+        tier_count: u64,
     }
 
     public struct Donated has copy, drop {
