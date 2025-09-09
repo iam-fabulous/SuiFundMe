@@ -89,7 +89,7 @@ module suifundme_smartcontract::suifundme_smartcontract {
     }
 
 
-    // Public getter functions for testing
+    // Public getter functions for testing or read-only access or query for off-chain systems
     public fun campaign_id(cap: &CreatorCap): ID {
         cap.campaign_id
     }
@@ -225,7 +225,7 @@ module suifundme_smartcontract::suifundme_smartcontract {
     }
 
 
-    public entry fun claim_funds(cap: CreatorCap, campaign: &mut Campaign, clock: &Clock, ctx: &mut TxContext) {
+     public entry fun claim_funds(cap: CreatorCap, campaign: &mut Campaign, clock: &Clock, ctx: &mut TxContext) {
         assert!(cap.campaign_id == object::id(campaign), EInvalidCap);
         assert!(clock::timestamp_ms(clock) > campaign.end_time, EDeadlineNotPassed);
         assert!(balance::value(&campaign.balance) >= campaign.goal, EGoalNotMet);
@@ -256,7 +256,7 @@ module suifundme_smartcontract::suifundme_smartcontract {
         let contributor = tx_context::sender(ctx);
         transfer::public_transfer(coin, contributor);
 
-        let Contribution { id, campaign_id: _, amount: _ } = contrib;
+        let Contribution { id, campaign_id: _, amount: _, tier_index: _ } = contrib;
         object::delete(id);
 
         event::emit(Refunded {
@@ -281,8 +281,5 @@ module suifundme_smartcontract::suifundme_smartcontract {
         });
     }
 }
-
-
-
 
 

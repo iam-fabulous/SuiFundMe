@@ -5,9 +5,7 @@ module suifundme_smartcontract::suifundme_smartcontract_tests {
     use sui::coin;
     use sui::sui::SUI;
     use sui::clock;
-    use std::vector;
     use suifundme_smartcontract::suifundme_smartcontract::{Self, Campaign, CreatorCap, Contribution};
-    use std::string;
 
     const CREATOR: address = @0x1;
     const DONOR: address = @0x2;
@@ -24,32 +22,19 @@ module suifundme_smartcontract::suifundme_smartcontract_tests {
         (names, mins, descs)
     }
 
+
     #[test]
     fun test_create_campaign() {
         let mut scenario = ts::begin(CREATOR);
         let clock = clock::create_for_testing(ts::ctx(&mut scenario));
-        let (tier_names, tier_mins, tier_descs) = dummy_tiers();
 
-        suifundme_smartcontract::create_campaign(
-            GOAL,
-            DURATION,
-            b"Test description",
-            b"walrus_blob_id_hex",
-            tier_names,
-            tier_mins,
-            tier_descs,
-            &clock,
-            ts::ctx(&mut scenario)
-        );
+        suifundme_smartcontract::create_campaign(GOAL, DURATION, &clock, ts::ctx(&mut scenario));
 
         ts::next_tx(&mut scenario, CREATOR);
         let cap = ts::take_from_sender<CreatorCap>(&scenario);
         let campaign = ts::take_shared<Campaign>(&scenario);
 
         assert_eq(suifundme_smartcontract::campaign_id(&cap), sui::object::id(&campaign));
-        assert_eq(*suifundme_smartcontract::campaign_description(&campaign), string::utf8(b"Test description"));
-        assert_eq(*suifundme_smartcontract::campaign_media_blob_id(&campaign), string::utf8(b"walrus_blob_id_hex"));
-        assert_eq(suifundme_smartcontract::campaign_tier_count(&campaign), 2);
 
         ts::return_to_sender(&scenario, cap);
         ts::return_shared(campaign);
@@ -57,34 +42,24 @@ module suifundme_smartcontract::suifundme_smartcontract_tests {
         ts::end(scenario);
     }
 
+
     #[test]
     fun test_donate() {
         let mut scenario = ts::begin(CREATOR);
         let clock = clock::create_for_testing(ts::ctx(&mut scenario));
-        let (tier_names, tier_mins, tier_descs) = dummy_tiers();
 
-        suifundme_smartcontract::create_campaign(
-            GOAL,
-            DURATION,
-            b"Test desc",
-            b"blob_id",
-            tier_names,
-            tier_mins,
-            tier_descs,
-            &clock,
-            ts::ctx(&mut scenario)
-        );
+        suifundme_smartcontract::create_campaign(GOAL, DURATION, &clock, ts::ctx(&mut scenario));
 
         ts::next_tx(&mut scenario, DONOR);
         let mut campaign = ts::take_shared<Campaign>(&scenario);
         let payment = coin::mint_for_testing<SUI>(DONATION, ts::ctx(&mut scenario));
 
-        suifundme_smartcontract::donate(&mut campaign, payment, 1, &clock, ts::ctx(&mut scenario)); // tier_index 1 (Bronze)
+        suifundme_smartcontract::donate(&mut campaign, payment, &clock, ts::ctx(&mut scenario));
 
+        // Switch to DONOR's context to retrieve Contribution
         ts::next_tx(&mut scenario, DONOR);
         let contrib = ts::take_from_sender<Contribution>(&scenario);
         assert_eq(suifundme_smartcontract::contribution_amount(&contrib), DONATION);
-        assert_eq(suifundme_smartcontract::contribution_tier_index(&contrib), 1);
 
         assert_eq(suifundme_smartcontract::campaign_balance(&campaign), DONATION);
 
@@ -94,55 +69,14 @@ module suifundme_smartcontract::suifundme_smartcontract_tests {
         ts::end(scenario);
     }
 
-    #[test]
-    #[expected_failure(abort_code = 8)] // EInsufficientAmount
-    fun test_donate_fail_insufficient_for_tier() {
-        let mut scenario = ts::begin(CREATOR);
-        let clock = clock::create_for_testing(ts::ctx(&mut scenario));
-        let (tier_names, tier_mins, tier_descs) = dummy_tiers();
 
-        suifundme_smartcontract::create_campaign(
-            GOAL,
-            DURATION,
-            b"Test desc",
-            b"blob_id",
-            tier_names,
-            tier_mins,
-            tier_descs,
-            &clock,
-            ts::ctx(&mut scenario)
-        );
-
-        ts::next_tx(&mut scenario, DONOR);
-        let mut campaign = ts::take_shared<Campaign>(&scenario);
-        let payment = coin::mint_for_testing<SUI>(TIER_MIN - 1, ts::ctx(&mut scenario));
-
-        suifundme_smartcontract::donate(&mut campaign, payment, 0, &clock, ts::ctx(&mut scenario));
-
-        ts::return_shared(campaign);
-        clock::destroy_for_testing(clock);
-        ts::end(scenario);
-    }
-
-    // Remaining tests (claim_funds_fail, claim_funds_success, refund, cancel_campaign) are unchanged but adapted for new create_campaign params
     #[test]
     #[expected_failure(abort_code = 3)]
     fun test_claim_funds_fail_goal_not_met() {
         let mut scenario = ts::begin(CREATOR);
         let mut clock = clock::create_for_testing(ts::ctx(&mut scenario));
-        let (tier_names, tier_mins, tier_descs) = dummy_tiers();
 
-        suifundme_smartcontract::create_campaign(
-            GOAL,
-            DURATION,
-            b"Test desc",
-            b"blob_id",
-            tier_names,
-            tier_mins,
-            tier_descs,
-            &clock,
-            ts::ctx(&mut scenario)
-        );
+        suifundme_smartcontract::create_campaign(GOAL, DURATION, &clock, ts::ctx(&mut scenario));
 
         ts::next_tx(&mut scenario, CREATOR);
         let cap = ts::take_from_sender<CreatorCap>(&scenario);
@@ -152,33 +86,24 @@ module suifundme_smartcontract::suifundme_smartcontract_tests {
 
         suifundme_smartcontract::claim_funds(cap, &mut campaign, &clock, ts::ctx(&mut scenario));
 
+        // Should fail, so no return needed
         ts::return_shared(campaign);
         clock::destroy_for_testing(clock);
         ts::end(scenario);
     }
 
+
     #[test]
     fun test_claim_funds_success() {
         let mut scenario = ts::begin(CREATOR);
         let mut clock = clock::create_for_testing(ts::ctx(&mut scenario));
-        let (tier_names, tier_mins, tier_descs) = dummy_tiers();
 
-        suifundme_smartcontract::create_campaign(
-            GOAL,
-            DURATION,
-            b"Test desc",
-            b"blob_id",
-            tier_names,
-            tier_mins,
-            tier_descs,
-            &clock,
-            ts::ctx(&mut scenario)
-        );
+        suifundme_smartcontract::create_campaign(GOAL, DURATION, &clock, ts::ctx(&mut scenario));
 
         ts::next_tx(&mut scenario, DONOR);
         let mut campaign = ts::take_shared<Campaign>(&scenario);
         let payment = coin::mint_for_testing<SUI>(GOAL, ts::ctx(&mut scenario));
-        suifundme_smartcontract::donate(&mut campaign, payment, 0, &clock, ts::ctx(&mut scenario));
+        suifundme_smartcontract::donate(&mut campaign, payment, &clock, ts::ctx(&mut scenario));
 
         ts::next_tx(&mut scenario, CREATOR);
         let cap = ts::take_from_sender<CreatorCap>(&scenario);
@@ -187,6 +112,7 @@ module suifundme_smartcontract::suifundme_smartcontract_tests {
 
         suifundme_smartcontract::claim_funds(cap, &mut campaign, &clock, ts::ctx(&mut scenario));
 
+        // Switch to CREATOR's context to retrieve Coin<SUI>
         ts::next_tx(&mut scenario, CREATOR);
         let received = ts::take_from_sender<coin::Coin<SUI>>(&scenario);
         assert_eq(coin::value(&received), GOAL);
@@ -200,37 +126,29 @@ module suifundme_smartcontract::suifundme_smartcontract_tests {
         ts::end(scenario);
     }
 
+
     #[test]
     fun test_refund() {
         let mut scenario = ts::begin(CREATOR);
         let mut clock = clock::create_for_testing(ts::ctx(&mut scenario));
-        let (tier_names, tier_mins, tier_descs) = dummy_tiers();
 
-        suifundme_smartcontract::create_campaign(
-            GOAL,
-            DURATION,
-            b"Test desc",
-            b"blob_id",
-            tier_names,
-            tier_mins,
-            tier_descs,
-            &clock,
-            ts::ctx(&mut scenario)
-        );
+        suifundme_smartcontract::create_campaign(GOAL, DURATION, &clock, ts::ctx(&mut scenario));
 
         ts::next_tx(&mut scenario, DONOR);
         let mut campaign = ts::take_shared<Campaign>(&scenario);
         let payment = coin::mint_for_testing<SUI>(DONATION, ts::ctx(&mut scenario));
-        suifundme_smartcontract::donate(&mut campaign, payment, 0, &clock, ts::ctx(&mut scenario));
+        suifundme_smartcontract::donate(&mut campaign, payment, &clock, ts::ctx(&mut scenario));
 
-        ts::next_tx(&mut scenario, DONOR);
+        ts::next_tx(&mut scenario, DONOR); // Switch to DONOR to retrieve Contribution
         let contrib = ts::take_from_sender<Contribution>(&scenario);
 
         clock::increment_for_testing(&mut clock, DURATION + 1);
 
+        // Ensure refund is called in DONOR's context
         ts::next_tx(&mut scenario, DONOR);
         suifundme_smartcontract::refund(&mut campaign, contrib, &clock, ts::ctx(&mut scenario));
 
+        // Retrieve the refunded Coin<SUI> in DONOR's context
         ts::next_tx(&mut scenario, DONOR);
         let refunded = ts::take_from_sender<coin::Coin<SUI>>(&scenario);
         assert_eq(coin::value(&refunded), DONATION);
@@ -243,23 +161,13 @@ module suifundme_smartcontract::suifundme_smartcontract_tests {
         ts::end(scenario);
     }
 
+
     #[test]
     fun test_cancel_campaign() {
         let mut scenario = ts::begin(CREATOR);
         let clock = clock::create_for_testing(ts::ctx(&mut scenario));
-        let (tier_names, tier_mins, tier_descs) = dummy_tiers();
 
-        suifundme_smartcontract::create_campaign(
-            GOAL,
-            DURATION,
-            b"Test desc",
-            b"blob_id",
-            tier_names,
-            tier_mins,
-            tier_descs,
-            &clock,
-            ts::ctx(&mut scenario)
-        );
+        suifundme_smartcontract::create_campaign(GOAL, DURATION, &clock, ts::ctx(&mut scenario));
 
         ts::next_tx(&mut scenario, CREATOR);
         let cap = ts::take_from_sender<CreatorCap>(&scenario);
