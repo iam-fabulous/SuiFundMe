@@ -247,12 +247,23 @@ module suifundme_smartcontract::suifundme_smartcontract_tests {
     }
 
 
-    #[test]
+   #[test]
     fun test_cancel_campaign() {
         let mut scenario = ts::begin(CREATOR);
         let clock = clock::create_for_testing(ts::ctx(&mut scenario));
+        let (tier_names, tier_mins, tier_descs) = dummy_tiers();
 
-        suifundme_smartcontract::create_campaign(GOAL, DURATION, &clock, ts::ctx(&mut scenario));
+        suifundme_smartcontract::create_campaign(
+            GOAL,
+            DURATION,
+            b"Test desc",
+            b"blob_id",
+            tier_names,
+            tier_mins,
+            tier_descs,
+            &clock,
+            ts::ctx(&mut scenario)
+        );
 
         ts::next_tx(&mut scenario, CREATOR);
         let cap = ts::take_from_sender<CreatorCap>(&scenario);
