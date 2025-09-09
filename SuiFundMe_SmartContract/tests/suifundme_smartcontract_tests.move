@@ -57,23 +57,34 @@ module suifundme_smartcontract::suifundme_smartcontract_tests {
     }
 
 
-    #[test]
+   #[test]
     fun test_donate() {
         let mut scenario = ts::begin(CREATOR);
         let clock = clock::create_for_testing(ts::ctx(&mut scenario));
+        let (tier_names, tier_mins, tier_descs) = dummy_tiers();
 
-        suifundme_smartcontract::create_campaign(GOAL, DURATION, &clock, ts::ctx(&mut scenario));
+        suifundme_smartcontract::create_campaign(
+            GOAL,
+            DURATION,
+            b"Test desc",
+            b"blob_id",
+            tier_names,
+            tier_mins,
+            tier_descs,
+            &clock,
+            ts::ctx(&mut scenario)
+        );
 
         ts::next_tx(&mut scenario, DONOR);
         let mut campaign = ts::take_shared<Campaign>(&scenario);
         let payment = coin::mint_for_testing<SUI>(DONATION, ts::ctx(&mut scenario));
 
-        suifundme_smartcontract::donate(&mut campaign, payment, &clock, ts::ctx(&mut scenario));
+        suifundme_smartcontract::donate(&mut campaign, payment, 1, &clock, ts::ctx(&mut scenario)); // tier_index 1 (Bronze)
 
-        // Switch to DONOR's context to retrieve Contribution
         ts::next_tx(&mut scenario, DONOR);
         let contrib = ts::take_from_sender<Contribution>(&scenario);
         assert_eq(suifundme_smartcontract::contribution_amount(&contrib), DONATION);
+        assert_eq(suifundme_smartcontract::contribution_tier_index(&contrib), 1);
 
         assert_eq(suifundme_smartcontract::campaign_balance(&campaign), DONATION);
 
