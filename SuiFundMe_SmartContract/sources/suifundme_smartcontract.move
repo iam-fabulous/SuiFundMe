@@ -114,6 +114,10 @@ module suifundme_smartcontract::suifundme_smartcontract {
         &campaign.media_blob_id
     }
 
+    public fun campaign_tier_count(campaign: &Campaign): u64 {
+        vector::length(&campaign.tiers)
+    }
+    
 
 
 
