@@ -95,6 +95,37 @@ module suifundme_smartcontract::suifundme_smartcontract_tests {
     }
 
 
+#[test]
+    #[expected_failure(abort_code = 8)] 
+    fun test_donate_fail_insufficient_for_tier() {
+        let mut scenario = ts::begin(CREATOR);
+        let clock = clock::create_for_testing(ts::ctx(&mut scenario));
+        let (tier_names, tier_mins, tier_descs) = dummy_tiers();
+
+        suifundme_smartcontract::create_campaign(
+            GOAL,
+            DURATION,
+            b"Test desc",
+            b"blob_id",
+            tier_names,
+            tier_mins,
+            tier_descs,
+            &clock,
+            ts::ctx(&mut scenario)
+        );
+
+        ts::next_tx(&mut scenario, DONOR);
+        let mut campaign = ts::take_shared<Campaign>(&scenario);
+        let payment = coin::mint_for_testing<SUI>(TIER_MIN - 1, ts::ctx(&mut scenario));
+
+        suifundme_smartcontract::donate(&mut campaign, payment, 0, &clock, ts::ctx(&mut scenario));
+
+        ts::return_shared(campaign);
+        clock::destroy_for_testing(clock);
+        ts::end(scenario);
+    }
+
+
     #[test]
     #[expected_failure(abort_code = 3)]
     fun test_claim_funds_fail_goal_not_met() {
