@@ -216,6 +216,12 @@ module suifundme_smartcontract::suifundme_smartcontract {
             tier_index,
         }, donor);
 
+        event::emit(Donated {
+            campaign_id: object::id(campaign),
+            donor,
+            amount,
+            tier_index,
+        });
     }
 
 
