@@ -197,7 +197,10 @@ module suifundme_smartcontract::suifundme_smartcontract {
         clock: &Clock,
         ctx: &mut TxContext
     ) {
-        
+        assert!(campaign.active, ECampaignInactive);
+        assert!(clock::timestamp_ms(clock) < campaign.end_time, EDeadlinePassed);
+
+       
     }
 
 
