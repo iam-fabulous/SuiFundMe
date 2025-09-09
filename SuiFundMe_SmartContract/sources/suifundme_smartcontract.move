@@ -159,13 +159,16 @@ module suifundme_smartcontract::suifundme_smartcontract {
             i = i + 1;
         };
 
-        let campaign = Campaign {
+       let campaign = Campaign {
             id: uid,
             creator,
             goal,
             balance: balance::zero(),
             end_time,
             active: true,
+            description,
+            media_blob_id,
+            tiers,
         };
 
         transfer::share_object(campaign);
@@ -180,8 +183,12 @@ module suifundme_smartcontract::suifundme_smartcontract {
             creator,
             goal,
             end_time,
+            description,
+            media_blob_id,
+            tier_count: len,
         });
     }
+
 
 
     public entry fun donate(campaign: &mut Campaign, payment: Coin<SUI>, clock: &Clock, ctx: &mut TxContext) {
