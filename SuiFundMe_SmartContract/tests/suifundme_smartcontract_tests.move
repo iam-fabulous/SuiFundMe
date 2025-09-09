@@ -126,13 +126,24 @@ module suifundme_smartcontract::suifundme_smartcontract_tests {
     }
 
 
-    #[test]
+   #[test]
     #[expected_failure(abort_code = 3)]
     fun test_claim_funds_fail_goal_not_met() {
         let mut scenario = ts::begin(CREATOR);
         let mut clock = clock::create_for_testing(ts::ctx(&mut scenario));
+        let (tier_names, tier_mins, tier_descs) = dummy_tiers();
 
-        suifundme_smartcontract::create_campaign(GOAL, DURATION, &clock, ts::ctx(&mut scenario));
+        suifundme_smartcontract::create_campaign(
+            GOAL,
+            DURATION,
+            b"Test desc",
+            b"blob_id",
+            tier_names,
+            tier_mins,
+            tier_descs,
+            &clock,
+            ts::ctx(&mut scenario)
+        );
 
         ts::next_tx(&mut scenario, CREATOR);
         let cap = ts::take_from_sender<CreatorCap>(&scenario);
@@ -142,7 +153,6 @@ module suifundme_smartcontract::suifundme_smartcontract_tests {
 
         suifundme_smartcontract::claim_funds(cap, &mut campaign, &clock, ts::ctx(&mut scenario));
 
-        // Should fail, so no return needed
         ts::return_shared(campaign);
         clock::destroy_for_testing(clock);
         ts::end(scenario);
