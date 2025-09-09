@@ -200,7 +200,12 @@ module suifundme_smartcontract::suifundme_smartcontract {
         assert!(campaign.active, ECampaignInactive);
         assert!(clock::timestamp_ms(clock) < campaign.end_time, EDeadlinePassed);
 
-       
+        let amount = coin::value(&payment);
+        assert!(tier_index < vector::length(&campaign.tiers), EInvalidTier);
+        let tier = vector::borrow(&campaign.tiers, tier_index);
+        assert!(amount >= tier.min_amount, EInsufficientAmount);
+
+        
     }
 
 
