@@ -125,11 +125,39 @@ module suifundme_smartcontract::suifundme_smartcontract {
 
 
     // Functions
-    public entry fun create_campaign(goal: u64, duration_ms: u64, clock: &Clock, ctx: &mut TxContext) {
+    public entry fun create_campaign(
+        goal: u64,
+        duration_ms: u64,
+        description_bytes: vector<u8>,
+        media_blob_id_bytes: vector<u8>,
+        tier_names: vector<vector<u8>>,
+        tier_min_amounts: vector<u64>,
+        tier_descriptions: vector<vector<u8>>,
+        clock: &Clock,
+        ctx: &mut TxContext
+    ) {
         let uid = object::new(ctx);
         let campaign_id = object::uid_to_inner(&uid);
         let creator = tx_context::sender(ctx);
         let end_time = clock::timestamp_ms(clock) + duration_ms;
+
+        let description = string::utf8(description_bytes);
+        let media_blob_id = string::utf8(media_blob_id_bytes);
+
+        // Validate tier vectors have same length
+        let len = vector::length(&tier_names);
+        assert!(len == vector::length(&tier_min_amounts) && len == vector::length(&tier_descriptions), ETierLengthsMismatch);
+
+        let mut tiers = vector::empty<RewardTier>();
+        let mut i = 0;
+        while (i < len) {
+            vector::push_back(&mut tiers, RewardTier {
+                name: string::utf8(*vector::borrow(&tier_names, i)),
+                min_amount: *vector::borrow(&tier_min_amounts, i),
+                description: string::utf8(*vector::borrow(&tier_descriptions, i)),
+            });
+            i = i + 1;
+        };
 
         let campaign = Campaign {
             id: uid,
