@@ -208,7 +208,14 @@ module suifundme_smartcontract::suifundme_smartcontract {
         let bal = coin::into_balance(payment);
         balance::join(&mut campaign.balance, bal);
 
-        
+        let donor = tx_context::sender(ctx);
+        transfer::transfer(Contribution {
+            id: object::new(ctx),
+            campaign_id: object::id(campaign),
+            amount,
+            tier_index,
+        }, donor);
+
     }
 
 
