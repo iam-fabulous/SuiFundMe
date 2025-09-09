@@ -23,18 +23,32 @@ module suifundme_smartcontract::suifundme_smartcontract_tests {
     }
 
 
-    #[test]
+   #[test]
     fun test_create_campaign() {
         let mut scenario = ts::begin(CREATOR);
         let clock = clock::create_for_testing(ts::ctx(&mut scenario));
+        let (tier_names, tier_mins, tier_descs) = dummy_tiers();
 
-        suifundme_smartcontract::create_campaign(GOAL, DURATION, &clock, ts::ctx(&mut scenario));
+        suifundme_smartcontract::create_campaign(
+            GOAL,
+            DURATION,
+            b"Test description",
+            b"walrus_blob_id_hex",
+            tier_names,
+            tier_mins,
+            tier_descs,
+            &clock,
+            ts::ctx(&mut scenario)
+        );
 
         ts::next_tx(&mut scenario, CREATOR);
         let cap = ts::take_from_sender<CreatorCap>(&scenario);
         let campaign = ts::take_shared<Campaign>(&scenario);
 
         assert_eq(suifundme_smartcontract::campaign_id(&cap), sui::object::id(&campaign));
+        assert_eq(*suifundme_smartcontract::campaign_description(&campaign), string::utf8(b"Test description"));
+        assert_eq(*suifundme_smartcontract::campaign_media_blob_id(&campaign), string::utf8(b"walrus_blob_id_hex"));
+        assert_eq(suifundme_smartcontract::campaign_tier_count(&campaign), 2);
 
         ts::return_to_sender(&scenario, cap);
         ts::return_shared(campaign);
