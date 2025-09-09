@@ -88,6 +88,7 @@ module suifundme_smartcontract::suifundme_smartcontract {
         campaign_id: ID,
     }
 
+
     // Public getter functions for testing
     public fun campaign_id(cap: &CreatorCap): ID {
         cap.campaign_id
@@ -104,6 +105,11 @@ module suifundme_smartcontract::suifundme_smartcontract {
     public fun campaign_active(campaign: &Campaign): bool {
         campaign.active
     }
+
+    public fun campaign_description(campaign: &Campaign): &String {
+        &campaign.description
+    }
+
 
 
     // Functions
