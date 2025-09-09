@@ -1,45 +1,77 @@
 'use client';
 
+import React from 'react';
 import { Button } from '../../../components/ui/button';
-// The original import for 'next/link' has been removed as it caused a compilation error.
-// We are now using standard <a> tags for navigation.
 
-// NOTE: This is a placeholder function. You will need to replace this with
-// actual wallet connection logic using a library like @mysten/sui.
 const handleConnectWallet = () => {
   console.log('Connect Wallet button clicked from Project Discovery Page');
-  // TODO: Add real wallet connection logic here, e.g.,
-  // const wallet = getWalletProvider();
-  // wallet.connect();
 };
 
 export default function ProjectDiscoveryPage() {
-  // NOTE: This array is a hardcoded mockup. In a real application, you would
-  // fetch this data from an API or a database (like Firestore) and then map
-  // over it to render the projects dynamically.
-  const projects = [
-    {
-      id: 1,
-      name: 'EcoTech Solutions: Sustainable Energy for All',
-      imageUrl: '/images/project-1.jpg',
-      funded: 75,
-      daysLeft: 25,
-    },
-    {
-      id: 2,
-      name: 'Harmonia: A Symphony of Unity',
-      imageUrl: '/images/project-2.jpg',
-      funded: 60,
-      daysLeft: 15,
-    },
-    {
-      id: 3,
-      name: 'PixelQuest: The RPG Revolution',
-      imageUrl: '/images/project-3.jpg',
-      funded: 90,
-      daysLeft: 30,
-    },
-  ];
+  type Project = {
+    id: string;
+    name: string;
+    imageUrl: string;
+    funded: number;
+    daysLeft: number;
+    description: string;
+    creator: string;
+    goalAmount: number;
+    raisedAmount: number;
+  };
+
+  const [projects, setProjects] = React.useState<Project[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await fetch('/api/projects');
+        if (!response.ok) {
+          throw new Error('Failed to fetch projects');
+        }
+        const data = await response.json();
+        setProjects(data);
+      } catch (err) {
+        console.error('Error fetching projects:', err);
+        setError(err instanceof Error ? err.message : 'Failed to fetch projects');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="relative flex size-full min-h-screen flex-col text-white group/design-root overflow-x-hidden bg-gray-800">
+        <main className="px-4 sm:px-6 lg:px-8 xl:px-20 2xl:px-40 flex flex-1 justify-center py-8">
+          <div className="layout-content-container flex flex-col w-full max-w-7xl">
+            <div className="p-4 space-y-6">
+              <h1 className="text-xl font-bold text-center">Loading Projects...</h1>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="relative flex size-full min-h-screen flex-col text-white group/design-root overflow-x-hidden bg-gray-800">
+        <main className="px-4 sm:px-6 lg:px-8 xl:px-20 2xl:px-40 flex flex-1 justify-center py-8">
+          <div className="layout-content-container flex flex-col w-full max-w-7xl">
+            <div className="p-4 space-y-6">
+              <h1 className="text-xl font-bold text-center text-red-500">Error loading projects</h1>
+              <p className="text-center text-gray-400">Please try again later.</p>
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="relative flex size-full min-h-screen flex-col text-white group/design-root overflow-x-hidden bg-gray-800">
@@ -57,20 +89,15 @@ export default function ProjectDiscoveryPage() {
               </label>
               <div className="flex items-center gap-3 p-3 flex-wrap">
                 <span className="text-sm font-medium text-gray-400">Filter by:</span>
-                {/* NOTE: The 'neon-blue-shadow' class is a custom class. It must be defined in your global CSS file for styling to apply. */}
                 <Button className="h-9 px-4 text-sm neon-blue-shadow transition-all duration-300 ease-in-out hover:bg-opacity-90">Tech</Button>
                 <Button className="h-9 px-4 text-sm hover:bg-opacity-80 transition-colors">Music</Button>
                 <Button className="h-9 px-4 text-sm hover:bg-opacity-80 transition-colors">Gaming</Button>
               </div>
             </div>
-            {/* NOTE: This section is hardcoded. It would be much more dynamic and scalable to map over the 'projects' array. */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-4">
               {projects.map((project) => (
                 <div key={project.id} className="flex flex-col gap-4 rounded-lg bg-gray-600 overflow-hidden group transition-transform duration-300 hover:-translate-y-1">
-                  {/* NOTE: Using inline style for the background image is functional, but
-                  ensure the images exist in your public directory.
-                  A better approach would be to use a component and pass the image URL as a prop. */}
-                  <div className="w-full bg-center bg-no-repeat aspect-video bg-cover" style={{ backgroundImage: `url("${project.imageUrl}")` }}></div>
+                  <img src={project.imageUrl} alt={project.name} className="w-full aspect-video object-cover" />
                   <div className="p-4 flex flex-col gap-3">
                     <h3 className="text-white text-base font-bold leading-snug">{project.name}</h3>
                     <div className="space-y-2">

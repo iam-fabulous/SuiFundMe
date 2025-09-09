@@ -15,7 +15,6 @@ export const WalletIcon = ({ name, logoSrc }: WalletIconProps) => {
           alt={`${name} Wallet Logo`} 
           width={32} 
           height={32} 
-          // You should place wallet logo files in the public/images directory and use a path like '/images/suiet-logo.svg'
         />
       </div>
       <span className="text-xs font-medium text-gray-300">{name}</span>

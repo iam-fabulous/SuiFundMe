@@ -3,14 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "dev": "next dev",
+    "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "deploy:testnet": "node scripts/deploy-contract-standalone.js testnet",
+    "deploy:mainnet": "node scripts/deploy-contract-standalone.js mainnet"
   },
   "dependencies": {
     "@mysten/dapp-kit": "^0.17.7",
     "@mysten/sui.js": "^0.54.1",
+    "@mysten/walrus": "^0.6.7",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-switch": "^1.2.6",
     "@tanstack/react-query": "^5.86.0",

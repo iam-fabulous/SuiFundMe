@@ -1,8 +1,8 @@
 "use client"
 
 import { cn } from "@/lib/utils"
-import { useState, useCallback } from "react"
 import { useDropzone } from "react-dropzone"
+import { useState, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Upload, X, ImageIcon, Video } from "lucide-react"
 
@@ -10,18 +10,31 @@ interface FileUploadProps {
   onFilesChange: (files: File[]) => void
   acceptedTypes?: string
   maxFiles?: number
+  allowMultiple?: boolean
 }
 
-export function FileUpload({ onFilesChange, acceptedTypes = "image/*,video/*", maxFiles = 10 }: FileUploadProps) {
+export function FileUpload({
+  onFilesChange,
+  acceptedTypes = "image/*,video/*",
+  maxFiles = 1,
+  allowMultiple = false
+}: FileUploadProps) {
   const [files, setFiles] = useState<File[]>([])
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      const newFiles = [...files, ...acceptedFiles].slice(0, maxFiles)
+      let newFiles: File[]
+
+      if (!allowMultiple) {
+        newFiles = acceptedFiles.slice(0, 1)
+      } else {
+        newFiles = [...files, ...acceptedFiles].slice(0, maxFiles)
+      }
+
       setFiles(newFiles)
       onFilesChange(newFiles)
     },
-    [files, maxFiles, onFilesChange],
+    [files, maxFiles, allowMultiple, onFilesChange],
   )
 
   const removeFile = (index: number) => {
@@ -43,9 +56,9 @@ export function FileUpload({ onFilesChange, acceptedTypes = "image/*,video/*", m
   })
 
   const getFileIcon = (file: File) => {
-    if (file.type.startsWith("image/")) return <ImageIcon className="h-4 w-4" />
-    if (file.type.startsWith("video/")) return <Video className="h-4 w-4" />
-    return <ImageIcon className="h-4 w-4" />
+    if (file.type.startsWith("image/")) return <ImageIcon className="h-10 w-10" />
+    if (file.type.startsWith("video/")) return <Video className="h-10 w-10" />
+    return <ImageIcon className="h-15 w-15" />
   }
 
   return (
@@ -67,7 +80,12 @@ export function FileUpload({ onFilesChange, acceptedTypes = "image/*,video/*", m
             <p className="text-foreground mb-2">
               <span className="font-medium">Click to upload</span> or drag and drop
             </p>
-            <p className="text-sm text-muted-foreground">Images and videos up to 10MB each (max {maxFiles} files)</p>
+            <p className="text-sm text-muted-foreground">
+              {allowMultiple
+                ? `Images and videos up to 10MB each (max ${maxFiles} files)`
+                : "Upload one image or video up to 10MB"
+              }
+            </p>
           </div>
         )}
       </div>
