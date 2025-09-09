@@ -70,6 +70,7 @@ module suifundme_smartcontract::suifundme_smartcontract {
         campaign_id: ID,
         donor: address,
         amount: u64,
+        tier_index: u64,
     }
 
     public struct FundsClaimed has copy, drop {
