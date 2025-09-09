@@ -110,6 +110,11 @@ module suifundme_smartcontract::suifundme_smartcontract {
         &campaign.description
     }
 
+    public fun campaign_media_blob_id(campaign: &Campaign): &String {
+        &campaign.media_blob_id
+    }
+
+
 
 
     // Functions
