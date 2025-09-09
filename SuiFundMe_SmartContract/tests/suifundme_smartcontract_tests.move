@@ -207,24 +207,33 @@ module suifundme_smartcontract::suifundme_smartcontract_tests {
     fun test_refund() {
         let mut scenario = ts::begin(CREATOR);
         let mut clock = clock::create_for_testing(ts::ctx(&mut scenario));
+        let (tier_names, tier_mins, tier_descs) = dummy_tiers();
 
-        suifundme_smartcontract::create_campaign(GOAL, DURATION, &clock, ts::ctx(&mut scenario));
+        suifundme_smartcontract::create_campaign(
+            GOAL,
+            DURATION,
+            b"Test desc",
+            b"blob_id",
+            tier_names,
+            tier_mins,
+            tier_descs,
+            &clock,
+            ts::ctx(&mut scenario)
+        );
 
         ts::next_tx(&mut scenario, DONOR);
         let mut campaign = ts::take_shared<Campaign>(&scenario);
         let payment = coin::mint_for_testing<SUI>(DONATION, ts::ctx(&mut scenario));
-        suifundme_smartcontract::donate(&mut campaign, payment, &clock, ts::ctx(&mut scenario));
+        suifundme_smartcontract::donate(&mut campaign, payment, 0, &clock, ts::ctx(&mut scenario));
 
-        ts::next_tx(&mut scenario, DONOR); // Switch to DONOR to retrieve Contribution
+        ts::next_tx(&mut scenario, DONOR);
         let contrib = ts::take_from_sender<Contribution>(&scenario);
 
         clock::increment_for_testing(&mut clock, DURATION + 1);
 
-        // Ensure refund is called in DONOR's context
         ts::next_tx(&mut scenario, DONOR);
         suifundme_smartcontract::refund(&mut campaign, contrib, &clock, ts::ctx(&mut scenario));
 
-        // Retrieve the refunded Coin<SUI> in DONOR's context
         ts::next_tx(&mut scenario, DONOR);
         let refunded = ts::take_from_sender<coin::Coin<SUI>>(&scenario);
         assert_eq(coin::value(&refunded), DONATION);
