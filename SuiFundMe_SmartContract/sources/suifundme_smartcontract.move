@@ -205,6 +205,9 @@ module suifundme_smartcontract::suifundme_smartcontract {
         let tier = vector::borrow(&campaign.tiers, tier_index);
         assert!(amount >= tier.min_amount, EInsufficientAmount);
 
+        let bal = coin::into_balance(payment);
+        balance::join(&mut campaign.balance, bal);
+
         
     }
 
