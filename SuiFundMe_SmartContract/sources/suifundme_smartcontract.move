@@ -117,8 +117,11 @@ module suifundme_smartcontract::suifundme_smartcontract {
     public fun campaign_tier_count(campaign: &Campaign): u64 {
         vector::length(&campaign.tiers)
     }
-    
 
+     public fun get_reward_tier(campaign: &Campaign, index: u64): (&String, u64, &String) {
+        let tier = vector::borrow(&campaign.tiers, index);
+        (&tier.name, tier.min_amount, &tier.description)
+    }
 
 
     // Functions
