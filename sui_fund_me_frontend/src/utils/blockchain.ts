@@ -20,8 +20,8 @@ export function daysToMilliseconds(days: string): bigint {
 }
 
 
-export const PACKAGE_ID = process.env.NEXT_PUBLIC_PACKAGE_ID || "0x0";
-export const MODULE_NAME = process.env.NEXT_PUBLIC_MODULE_NAME || "suifundme_smartcontract";
+export const PACKAGE_ID = "0xc01e453d27f18bb7ca4afb033f97cb3dac6eb3fa56c9f78cee56bccc8062efc4";
+export const MODULE_NAME = "suifundme_smartcontract";
 
 
 export const suiClient = new SuiClient({
@@ -147,6 +147,7 @@ export async function cancelCampaignTransaction({ capId, campaignId }: {
   return tx;
 }
 
-export async function executeTransaction(tx: Transaction) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export async function executeTransaction(_tx: Transaction) {
   throw new Error("This function should be used within a component with wallet access");
 }

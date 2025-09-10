@@ -1,13 +1,24 @@
-import { SuiClient, getFullnodeUrl } from "@mysten/sui/client";
+// src/lib/sui.ts
+import { bcs } from '@mysten/sui/bcs';
+import { Transaction } from "@mysten/sui/transactions";
+import { SuiClient, getFullnodeUrl, SuiObjectResponse, SuiParsedData } from "@mysten/sui/client";
 
-const NETWORK = process.env.NEXT_PUBLIC_SUI_NETWORK || "testnet";
-const PUBLISHER_ADDRESS = process.env.NEXT_PUBLIC_PUBLISHER_ADDRESS || "";
-const PACKAGE_ID = process.env.NEXT_PUBLIC_PACKAGE_ID || "";
 
-const client = new SuiClient({
-  url: NETWORK === "mainnet" ? getFullnodeUrl("mainnet") : getFullnodeUrl("testnet")
-});
+type ProjectFields = {
+  description?: number[];
+  goal?: number | string;
+  balance?: number | string | { fields?: { value?: number } };
+  end_time?: number | string;
+  media_blob_id?: number[];
+  creator?: string;
+};
 
+const NETWORK = process.env.NEXT_PUBLIC_SUI_NETWORK || 'testnet';
+const client = new SuiClient({ url: getFullnodeUrl(NETWORK as 'testnet' | 'mainnet') });
+const PROJECT_MOVE_TYPE =
+  "0xc01e453d27f18bb7ca4afb033f97cb3dac6eb3fa56c9f78cee56bccc8062efc4::suifundme_smartcontract::Project";
+
+  type SignAndExecuteFn = (args: { transaction: Transaction }) => Promise<{ digest: string }>;
 export type ChainProject = {
   id: string;
   name: string;
@@ -20,11 +31,34 @@ export type ChainProject = {
   raisedAmount: number;
 };
 
+export interface SuiObjectField {
+  name?: string;
+  image_url?: string;
+  funded_percent?: number | string;
+  days_left?: number | string;
+  description?: string;
+  creator?: string;
+  goal_amount?: number | string;
+  raised_amount?: number | string;
+}
+
+export interface SuiObjectContent {
+  dataType: string;
+  fields: SuiObjectField;
+}
+
+export interface SuiOwnedObject {
+  data?: {
+    objectId: string;
+    content?: SuiObjectContent;
+  };
+}
+
 const mockProjects: Record<string, ChainProject> = {
   "1": {
     id: "1",
     name: "EcoTech Solutions: Sustainable Energy for All",
-    imageUrl: "/images/image-1.jpg",
+    imageUrl: "/images/image-1.png",
     funded: 75,
     daysLeft: 25,
     description:
@@ -36,7 +70,7 @@ const mockProjects: Record<string, ChainProject> = {
   "2": {
     id: "2",
     name: "Harmonia: A Symphony of Unity",
-    imageUrl: "/images/image-2.jpg",
+    imageUrl: "/images/image-2.png",
     funded: 60,
     daysLeft: 15,
     description:
@@ -48,7 +82,7 @@ const mockProjects: Record<string, ChainProject> = {
   "3": {
     id: "3",
     name: "PixelQuest: The RPG Revolution",
-    imageUrl: "/images/image-1.jpg",
+    imageUrl: "/images/image-1.png",
     funded: 90,
     daysLeft: 30,
     description:
@@ -59,8 +93,8 @@ const mockProjects: Record<string, ChainProject> = {
   },
   "4": {
     id: "4",
-    name: "PixelQuest: The RPG Revolution",
-    imageUrl: "/images/image-2.jpg",
+    name: "PixelQuest Early Access",
+    imageUrl: "/images/image-2.png",
     funded: 10,
     daysLeft: 30,
     description:
@@ -75,100 +109,44 @@ export async function fetchProjectsFromChain(): Promise<ChainProject[]> {
   try {
     console.log("🔗 Fetching projects from Sui blockchain...");
 
-    if (!PACKAGE_ID || !PUBLISHER_ADDRESS) {
-      console.warn("⚠️ Package ID or Publisher Address not configured, using mock data");
-      return Object.values(mockProjects);
-    }
+    const objs = await client.getOwnedObjects({
+      owner: "0xYourPublisherAddr", 
+      options: { showContent: true },
+    });
 
-    const projects: ChainProject[] = [];
+    const projects: ChainProject[] = objs.data.map((obj: SuiObjectResponse, idx: number) => {
+      const content = obj.data?.content as SuiParsedData | undefined;
 
-    try {
-      const ownedObjects = await client.getOwnedObjects({
-        owner: PUBLISHER_ADDRESS,
-        options: { showType: true, showContent: true },
-      });
-      const campaignObjects = ownedObjects.data.filter(obj => {
-        const objType = obj.data?.type;
-        return objType?.includes(`${PACKAGE_ID}::suifundme_smartcontract::Campaign`);
-      });
+      if (content?.dataType === "moveObject") {
+        const fields = content.fields as SuiObjectField;
 
-      console.log(`📊 Found ${campaignObjects.length} Campaign objects`);
-
-      for (const obj of campaignObjects) {
-        try {
-          const project = await processCampaignObject(obj);
-          if (project) {
-            projects.push(project);
-          }
-        } catch (error) {
-          console.error(`❌ Error processing campaign ${obj.data?.objectId}:`, error);
-        }
+        return {
+          id: obj.data?.objectId ?? `chain-${idx}`,
+          name: fields.name ?? "Unnamed Project",
+          imageUrl: fields.image_url ?? "/images/project-placeholder.jpg",
+          funded: Number(fields.funded_percent ?? 0),
+          daysLeft: Number(fields.days_left ?? 0),
+          description: fields.description ?? "No description available",
+          creator: fields.creator ?? "Unknown",
+          goalAmount: Number(fields.goal_amount ?? 0),
+          raisedAmount: Number(fields.raised_amount ?? 0),
+        };
       }
 
-      if (projects.length === 0) {
-        console.log("📝 No real campaigns found, using mock data for development");
-        return Object.values(mockProjects);
-      }
+      return {
+        id: obj.data?.objectId ?? `chain-${idx}`,
+        name: "Unknown Project",
+        imageUrl: "/images/project-placeholder.jpg",
+        funded: 0,
+        daysLeft: 0,
+        description: "Invalid or non-move object",
+        creator: "Unknown",
+        goalAmount: 0,
+        raisedAmount: 0,
+      };
+    });
 
-      console.log(`✅ Successfully fetched ${projects.length} real projects from blockchain`);
-      return projects;
-
-    } catch (ownedObjectsError) {
-      console.warn("⚠️ Failed to fetch by owned objects, trying alternative methods:", ownedObjectsError);
-
-      try {
-        const txBlocks = await client.queryTransactionBlocks({
-          limit: 50, 
-          options: {
-            showInput: true,
-            showEffects: true,
-            showEvents: true
-          }
-        });
-
-        const campaignIds: string[] = [];
-
-        for (const tx of txBlocks.data) {
-          const events = tx.events || [];
-          for (const event of events) {
-            if (event.type?.includes(`${PACKAGE_ID}::suifundme_smartcontract::CampaignCreated`)) {
-              const campaignId = (event.parsedJson as any)?.campaign_id;
-              if (campaignId && !campaignIds.includes(campaignId)) {
-                campaignIds.push(campaignId);
-              }
-            }
-          }
-        }
-
-        console.log(`📊 Found ${campaignIds.length} campaign IDs from events`);
-
-        for (const campaignId of campaignIds) {
-          try {
-            const campaignObject = await client.getObject({
-              id: campaignId,
-              options: { showContent: true, showType: true }
-            });
-
-            const project = await processCampaignObject(campaignObject);
-            if (project) {
-              projects.push(project);
-            }
-          } catch (error) {
-            console.error(`❌ Error fetching campaign ${campaignId}:`, error);
-          }
-        }
-
-        if (projects.length > 0) {
-          return projects;
-        }
-
-      } catch (transactionError) {
-        console.warn("⚠️ Failed transaction-based discovery:", transactionError);
-      }
-    }
-
-    console.log("📝 Using mock data as final fallback");
-    return Object.values(mockProjects);
+    return projects;
 
   } catch (err) {
     console.error("❌ Critical error in fetchProjectsFromChain:", err);
@@ -176,89 +154,7 @@ export async function fetchProjectsFromChain(): Promise<ChainProject[]> {
   }
 }
 
-async function processCampaignObject(obj: any): Promise<ChainProject | null> {
-  try {
-    const content = obj.data?.content;
-    if (!content || content.dataType !== "moveObject") {
-      return null;
-    }
 
-    const fields = content.fields;
-    if (!fields) {
-      return null;
-    }
-
-    const objId = obj.data?.objectId || obj.objectId || 'unknown';
-    if (!fields.creator || !fields.goal || !fields.end_time) {
-      console.warn(`⚠️ Campaign ${objId} missing required fields`);
-      return null;
-    }
-
-    let descriptionText = "No description available";
-    if (fields.description && Array.isArray(fields.description)) {
-      try {
-        const descriptionBytes = new Uint8Array(fields.description);
-        descriptionText = new TextDecoder().decode(descriptionBytes);
-      } catch (error) {
-        console.warn(`⚠️ Failed to decode description for campaign ${obj.objectId}`);
-      }
-    }
-
-    const goal = Number(fields.goal) || 0;
-    let balance = Number(fields.balance) || 0;
-
-    if (fields.balance && typeof fields.balance === 'object') {
-      const balanceObj = fields.balance as any;
-      const balanceValue = balanceObj.fields?.value || balanceObj.value || fields.balance;
-      const balanceNum = typeof balanceValue === 'string' ? Number(balanceValue) : Number(balanceValue);
-      balance = balanceNum || 0;
-    }
-
-    const fundedPercent = goal > 0 ? Math.round(Math.min(100, (balance / goal) * 100)) : 0;
-
-    const endTimeMs = Number(fields.end_time) || 0;
-    const currentTime = Date.now();
-    const msPerDay = 1000 * 60 * 60 * 24;
-    const daysLeft = endTimeMs > currentTime ? Math.max(1, Math.ceil((endTimeMs - currentTime) / msPerDay)) : 0;
-
-    let imageUrl = "/images/project-placeholder.jpg";
-    if (fields.media_blob_id && Array.isArray(fields.media_blob_id)) {
-      try {
-        const blobIdHex = fields.media_blob_id
-          .map((byte: number) => byte.toString(16).padStart(2, '0'))
-          .join('');
-
-        if (blobIdHex && blobIdHex !== '00'.repeat(fields.media_blob_id.length)) {
-          const walrusHost = NETWORK === "mainnet"
-            ? "https://aggregator.walrus-prod.su.io"
-            : "https://aggregator.walrus-testnet.sui.io";
-          imageUrl = `${walrusHost}/v1/blobs/${blobIdHex}`;
-        }
-      } catch (error) {
-        console.warn(`⚠️ Failed to parse media blob ID for campaign ${obj.objectId}:`, error);
-      }
-    }
-
-    const project: ChainProject = {
-      id: objId,
-      name: descriptionText.length > 60 ? `${descriptionText.substring(0, 60)}...` : descriptionText,
-      imageUrl,
-      funded: fundedPercent,
-      daysLeft,
-      description: descriptionText,
-      creator: fields.creator,
-      goalAmount: Math.floor(goal / 1e9),
-      raisedAmount: Math.floor(balance / 1e9),
-    };
-
-    console.log(`✅ Successfully processed campaign ${project.id}: ${project.name}`);
-    return project;
-
-  } catch (error) {
-    console.error(`❌ Error processing campaign object:`, error);
-    return null;
-  }
-}
 
 export async function fetchProjectById(
   projectId: string
@@ -273,7 +169,7 @@ export async function fetchProjectById(
 
     const content = obj.data?.content;
     if (content?.dataType === "moveObject") {
-      const fields = (content as any).fields;
+      const fields = content.fields as ProjectFields;
 
       const descriptionText = fields?.description
         ? new TextDecoder().decode(new Uint8Array(fields.description))
@@ -293,21 +189,21 @@ export async function fetchProjectById(
         try {
           const blobIdHex = Array.from(mediaBlobId, byte => byte.toString(16).padStart(2, '0')).join('');
           imageUrl = `https://aggregator.walrus-testnet.sui.io/v1/blobs/${blobIdHex}`;
-        } catch (e) {
+        } catch {
           console.log("Could not parse media blob ID");
         }
       }
 
       return {
         id: obj.data?.objectId ?? projectId,
-        name: descriptionText.length > 50 ? `${descriptionText.substring(0, 50)}...` : descriptionText,
+        name: descriptionText.length > 60 ? `${descriptionText.substring(0, 60)}...` : descriptionText,
         imageUrl,
         funded: fundedPercent,
         daysLeft,
         description: descriptionText,
-        creator: fields?.creator ?? "Unknown",
-        goalAmount: goal,
-        raisedAmount: balance,
+        creator: fields.creator ?? "Unknown",
+        goalAmount: Math.floor(goal / 1e9),
+        raisedAmount: Math.floor(balance / 1e9),
       };
     }
 
@@ -320,17 +216,25 @@ export async function fetchProjectById(
 
 export async function pledgeToProject(
   projectId: string,
-  amount: number
-): Promise<{ success: boolean; txDigest?: string }> {
-  console.log(`� Attempting to pledge ${amount} SUI to project ${projectId}`);
+  amount: number,
+  signAndExecuteTransaction: SignAndExecuteFn
+) {
+  const tx = new Transaction();
 
-  try {
-    return {
-      success: true,
-      txDigest: "0xMockTxDigest",
-    };
-  } catch (err) {
-    console.error(`❌ Failed to pledge to project ${projectId}:`, err);
-    return { success: false };
-  }
+  tx.moveCall({
+    target: `${PROJECT_MOVE_TYPE}::pledge`,
+    arguments: [
+      tx.object(projectId),
+      tx.pure(bcs.u64().serialize(amount).toBytes()),
+    ],
+  });
+
+  const result = await signAndExecuteTransaction({ transaction: tx });
+
+  return {
+    success: true,
+    txDigest: result.digest,
+    projectId,
+    pledgedAmount: amount,
+  };
 }

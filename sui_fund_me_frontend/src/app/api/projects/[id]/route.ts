@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { fetchProjectById } from "../../../../lib/sui";
 
-const mockProjects: Record<string, any> = {
+// Mock fallback for detail pages
+const mockProjects: Record<string, unknown> = {
   "mock-1": {
     id: "mock-1",
     name: "Mock Project One",
@@ -40,9 +41,9 @@ export async function GET(
     if (mockProjects[id]) return NextResponse.json(mockProjects[id]);
 
     return NextResponse.json({ error: "Project not found" }, { status: 404 });
-  } catch (err: any) {
+  } catch (err: unknown) {
     return NextResponse.json(
-      { error: "Failed to fetch project detail", details: err.message },
+      { error: "Failed to fetch project detail", details: err },
       { status: 500 }
     );
   }

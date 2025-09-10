@@ -40,11 +40,11 @@ export default function CreateProjectPage() {
           <div className="bg-card rounded-lg p-6 border border-border">
             <h2 className="text-xl font-semibold text-card-foreground mb-4">Upload Project Media</h2>
             <p className="text-muted-foreground mb-6">
-              Add one image or video that showcases your project. This will help potential backers understand what you're
+              Add one image or video that showcases your project. This will help potential backers understand what you`re
               creating.
             </p>
 
-            <FileUpload onFilesChange={handleFilesChange} acceptedTypes="image/*,video/*" allowMultiple={false} />
+            <FileUpload onFilesChange={handleFilesChange} acceptedTypes="image/*,video/*" maxFiles={1} />
           </div>
         </div>
 

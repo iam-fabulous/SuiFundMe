@@ -1,4 +1,5 @@
 import { WalrusClient } from '@mysten/walrus';
+import { Transaction } from '@mysten/sui/transactions';
 
 export const WALRUS_AGGREGATOR = 'https://aggregator.walrus-testnet.sui.io';
 export const WALRUS_PUBLISHER = 'https://publisher.walrus-testnet.sui.io';
@@ -17,7 +18,7 @@ const getWalrusClient = (): WalrusClient => {
 };
 
 
-export async function uploadToWalrus(file: File, account: string): Promise<{ blobId: string; transaction: any }> {
+export async function uploadToWalrus(file: File, account: string): Promise<{ blobId: string; transaction: Transaction }> {
   try {
     console.log(`Preparing ${file.name} for Walrus upload...`);
 
@@ -25,7 +26,7 @@ export async function uploadToWalrus(file: File, account: string): Promise<{ blo
     const blob = new Uint8Array(arrayBuffer);
 
     const client = getWalrusClient();
-    const { blobId, metadata, rootHash } = await client.encodeBlob(blob);
+    const { blobId, rootHash } = await client.encodeBlob(blob);
 
     console.log(`Encoded ${file.name}, blob ID: ${blobId}`);
 
@@ -46,7 +47,7 @@ export async function uploadToWalrus(file: File, account: string): Promise<{ blo
   }
 }
 
-export async function uploadSingleFileToWalrus(file: File, account: string): Promise<{ blobId: string; transaction: any }> {
+export async function uploadSingleFileToWalrus(file: File, account: string): Promise<{ blobId: string; transaction: Transaction }> {
   if (!file) {
     throw new Error("No file provided")
   }
@@ -54,7 +55,7 @@ export async function uploadSingleFileToWalrus(file: File, account: string): Pro
   return uploadToWalrus(file, account);
 }
 
-export async function uploadMultipleToWalrus(files: File[], account: string): Promise<{ blobIds: string[]; transactions: any[] }> {
+export async function uploadMultipleToWalrus(files: File[], account: string): Promise<{ blobIds: string[]; transactions: Transaction[] }> {
   try {
     const uploads = await Promise.all(files.map(file => uploadToWalrus(file, account)));
 
