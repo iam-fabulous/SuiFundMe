@@ -7,7 +7,7 @@ Project Name: Sui FundMe
 
 Version: 1.0 
 
-Date: 26 October 2023 
+Date: 03 September 2025
 
 Author: Timothy Idowu
 
@@ -198,3 +198,8 @@ Author: Timothy Idowu
             - Time Constraints: Aggressively prioritise MVP features. Any non-essential UI/UX polish, advanced features, or extensive content creation (like a full "Creator Handbook") will be out of scope for the buildathon.
             - Integration Challenges: Use existing Sui SDKs and well-documented wallet integrations. Keep the frontend stack simple.
             - By adhering to this focused plan, we aim to present a compelling demo of SuiLaunch's core value proposition on Demo Day, showcasing the power of decentralised crowdfunding on the Sui blockchain.
+
+
+11. User Flow & Basic Architecture 
+    
+

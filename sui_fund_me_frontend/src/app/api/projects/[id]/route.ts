@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { fetchProjectById } from "@/lib/sui";
+import { fetchProjectById } from "../../../../lib/sui";
 
 // Mock fallback for detail pages
-const mockProjects: Record<string, any> = {
+const mockProjects: Record<string, unknown> = {
   "mock-1": {
     id: "mock-1",
     name: "Mock Project One",
@@ -34,17 +34,16 @@ export async function GET(
   try {
     const { id } = await params;
 
-    // Try fetching from chain
     const project = await fetchProjectById(id);
+
     if (project) return NextResponse.json(project);
 
-    // Otherwise fallback to mock
     if (mockProjects[id]) return NextResponse.json(mockProjects[id]);
 
     return NextResponse.json({ error: "Project not found" }, { status: 404 });
-  } catch (err: any) {
+  } catch (err: unknown) {
     return NextResponse.json(
-      { error: "Failed to fetch project detail", details: err.message },
+      { error: "Failed to fetch project detail", details: err },
       { status: 500 }
     );
   }

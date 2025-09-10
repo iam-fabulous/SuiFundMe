@@ -1,10 +1,9 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { WalletIcon } from '@/components/wallet-icon';
 import Link from 'next/link';
+import { Button } from '../../../components/ui/button';
+import { WalletIcon } from '../../../components/wallet-icon';
 
-// You will need to implement the actual wallet connection logic here
 const handleConnectWallet = () => {
   console.log('Connect Wallet button clicked');
 };
@@ -13,10 +12,9 @@ export default function ConnectWalletPage() {
   return (
     <div className="relative flex size-full min-h-screen flex-col dark group/design-root overflow-x-hidden">
       <div className="layout-container flex h-full grow flex-col">
-        {/* Header - A good candidate for a reusable component */}
         <header className="p-6">
           <div className="flex items-center justify-between">
-            <Link href="#" className="text-2xl font-bold tracking-tighter">
+            <Link href="#" className="text-3xl font-bold tracking-tighter">
               SuiFundMe
             </Link>
             <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
@@ -30,7 +28,6 @@ export default function ConnectWalletPage() {
           </div>
         </header>
 
-        {/* Main Content */}
         <main className="flex flex-1 flex-col items-center justify-center text-center px-4">
           <div className="max-w-3xl">
             <h1 className="text-5xl md:text-7xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400 mb-4">

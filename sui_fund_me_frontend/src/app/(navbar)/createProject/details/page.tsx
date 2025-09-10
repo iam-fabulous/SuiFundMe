@@ -13,7 +13,11 @@ import { ProgressBar } from "@/components/createProject/progressBar"
 export default function ProjectDetailsPage() {
   const router = useRouter()
   const { state, dispatch, canProceedToStep } = useProject()
-  const [formData, setFormData] = useState(state.projectDetails)
+  const [formData, setFormData] = useState({
+    ...state.projectDetails,
+    fundingGoal: state.fundingGoal,
+    duration: state.duration
+  })
 
   useEffect(() => {
     if (!canProceedToStep(2)) {
@@ -29,14 +33,16 @@ export default function ProjectDetailsPage() {
   }
 
   const handleContinue = () => {
-    dispatch({ type: "SET_PROJECT_DETAILS", details: formData })
-    if (formData.title.trim() && formData.description.trim()) {
+    dispatch({ type: "SET_PROJECT_DETAILS", details: { title: formData.title, description: formData.description } })
+    dispatch({ type: "SET_FUNDING_GOAL", goal: formData.fundingGoal })
+    dispatch({ type: "SET_DURATION", duration: formData.duration })
+    if (formData.title.trim() && formData.description.trim() && formData.fundingGoal.trim() && formData.duration.trim()) {
       dispatch({ type: "SET_STEP", step: 3 })
       router.push("/createProject/rewards")
     }
   }
 
-  const isFormValid = formData.title.trim() && formData.description.trim()
+  const isFormValid = formData.title.trim() && formData.description.trim() && formData.fundingGoal.trim() && formData.duration.trim()
 
   return (
     <div className="relative size-full min-h-screen overflow-x-hidden">
@@ -87,6 +93,42 @@ export default function ProjectDetailsPage() {
                 <p className="text-xs text-muted-foreground font-semibold mt-1">
                   Describe what makes your project special and why people should support it.
                 </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="fundingGoal" className="text-black font-bold">
+                    Funding Goal (SUI)
+                  </Label>
+                  <Input
+                    id="fundingGoal"
+                    type="number"
+                    placeholder="1000"
+                    value={formData.fundingGoal}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, fundingGoal: e.target.value }))}
+                    className="mt-2 bg-input border-border text-foreground"
+                  />
+                  <p className="text-xs text-muted-foreground font-semibold mt-1">
+                    Minimum amount needed to crowdfund your project.
+                  </p>
+                </div>
+
+                <div>
+                  <Label htmlFor="duration" className="text-black font-bold">
+                    Campaign Duration (Days)
+                  </Label>
+                  <Input
+                    id="duration"
+                    type="number"
+                    placeholder="30"
+                    value={formData.duration}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, duration: e.target.value }))}
+                    className="mt-2 bg-input border-border text-foreground"
+                  />
+                  <p className="text-xs text-muted-foreground font-semibold mt-1">
+                    How long your campaign will run.
+                  </p>
+                </div>
               </div>
             </div>
           </div>

@@ -6,7 +6,6 @@ import { ReactNode, useState } from "react";
 import { ProjectProvider } from "./contexts/project-contexts";
 
 export default function Providers({ children }: { children: ReactNode }) {
-  // Ensure only 1 QueryClient exists
   const [queryClient] = useState(() => new QueryClient());
 
   return (
