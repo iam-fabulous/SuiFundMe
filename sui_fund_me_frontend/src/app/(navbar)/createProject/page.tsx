@@ -16,7 +16,7 @@ export default function CreateProjectPage() {
   }
 
   const handleContinue = () => {
-    if (state.files.length > 0) {
+    if (state.files.length === 1) {
       dispatch({ type: "SET_STEP", step: 2 })
       router.push("/createProject/details")
     }
@@ -40,11 +40,11 @@ export default function CreateProjectPage() {
           <div className="bg-card rounded-lg p-6 border border-border">
             <h2 className="text-xl font-semibold text-card-foreground mb-4">Upload Project Media</h2>
             <p className="text-muted-foreground mb-6">
-              Add images or videos that showcase your project. These will help potential backers understand what you`re
+              Add one image or video that showcases your project. This will help potential backers understand what you`re
               creating.
             </p>
 
-            <FileUpload onFilesChange={handleFilesChange} acceptedTypes="image/*,video/*" maxFiles={10} />
+            <FileUpload onFilesChange={handleFilesChange} acceptedTypes="image/*,video/*" maxFiles={1} />
           </div>
         </div>
 
@@ -54,7 +54,7 @@ export default function CreateProjectPage() {
           </Button>
           <Button
             onClick={handleContinue}
-            disabled={state.files.length === 0}
+            disabled={state.files.length !== 1}
             className="bg-blue-600 hover:bg-primary/90 text-white font-semibold"
           >
             Save & Continue

@@ -102,13 +102,14 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
-import { useCurrentAccount, useSignAndExecuteTransaction } from '@mysten/dapp-kit';
+import { useEffect, useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { useCurrentAccount } from '@mysten/dapp-kit';
+import { useParams, useRouter } from "next/navigation";
 import { ChevronLeft, Users, Clock, Target, Award, } from 'lucide-react';
 
-// Updated types
 export type Tier = {
   id: string;
   name: string;
@@ -141,9 +142,8 @@ export type ChainProject = {
   longDescription?: string;
 };
 
-// Mock function - replace with your actual implementation
 async function fetchProjectById(projectId: string): Promise<ChainProject> {
-  // This should be replaced with your actual API call
+
   return {
     id: projectId,
     name: "Ocean Cleanup Initiative",
@@ -241,17 +241,13 @@ async function fetchProjectById(projectId: string): Promise<ChainProject> {
   };
 }
 
-// Updated pledge function - you'll need to implement this
 async function pledgeToProject(
   projectId: string, 
   tierId: string, 
   amount: number, 
   walletAddress: string, 
-  // signAndExecuteTransaction: any
 ): Promise<void> {
-  // Your implementation here
   console.log("Pledging:", { projectId, tierId, amount, walletAddress });
-  // Simulate transaction
   await new Promise(resolve => setTimeout(resolve, 2000));
 }
 
@@ -311,10 +307,8 @@ export default function ProjectDetailPage() {
         selectedTier.id,
         pledgeAmount,
         currentAccount.address,
-        // signAndExecuteTransaction
       );
       
-      // Success - redirect to explore page
       alert(`Successfully pledged ${pledgeAmount}! Your NFT will be sent when the project goal is met.`);
       router.push('/explore');
     } catch (err) {
@@ -352,7 +346,6 @@ export default function ProjectDetailPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950">
-      {/* Animated Background Streaks */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
           <defs>
@@ -372,19 +365,16 @@ export default function ProjectDetailPage() {
       </div>
 
       <div className="relative z-10">
-        {/* Header */}
         <div className="p-6">
-          <button
+          <Button
             onClick={() => router.back()}
             className="flex items-center space-x-2 text-blue-200 hover:text-cyan-400 transition-colors mb-6"
           >
             <ChevronLeft size={20} />
             <span>Back to Projects</span>
-          </button>
+          </Button>
 
-          {/* Hero Section */}
           <div className="grid lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
-            {/* Image */}
             <div className="relative">
               <Image
                 src={project.imageUrl}
@@ -398,14 +388,12 @@ export default function ProjectDetailPage() {
               </div>
             </div>
 
-            {/* Project Info */}
             <div className="space-y-6">
               <div>
                 <h1 className="text-4xl font-bold text-white mb-2">{project.name}</h1>
                 <p className="text-blue-200 text-lg">{project.description}</p>
               </div>
 
-              {/* Stats */}
               <div className="grid grid-cols-3 gap-4">
                 <div className="bg-black/20 backdrop-blur-sm rounded-lg p-4 border border-blue-900/30">
                   <Target className="text-cyan-400 mb-2" size={24} />
@@ -426,7 +414,6 @@ export default function ProjectDetailPage() {
                 </div>
               </div>
 
-              {/* Progress Bar */}
               <div>
                 <div className="flex justify-between text-sm text-blue-200 mb-2">
                   <span>${project.raisedAmount.toLocaleString()} raised</span>
@@ -440,7 +427,6 @@ export default function ProjectDetailPage() {
                 </div>
               </div>
 
-              {/* Creator */}
               <div className="flex items-center space-x-3 p-4 bg-black/20 backdrop-blur-sm rounded-lg border border-blue-900/30">
                 <div className="w-10 h-10 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-full flex items-center justify-center">
                   <span className="text-white font-bold text-sm">
@@ -456,7 +442,6 @@ export default function ProjectDetailPage() {
           </div>
         </div>
 
-        {/* Detailed Description */}
         {project.longDescription && (
           <div className="px-6 py-8">
             <div className="max-w-4xl mx-auto">
@@ -466,7 +451,6 @@ export default function ProjectDetailPage() {
           </div>
         )}
 
-        {/* Support Tiers */}
         <div className="px-6 py-8">
           <div className="max-w-7xl mx-auto">
             <h2 className="text-3xl font-bold text-white mb-8 text-center">Choose Your Impact Level</h2>
@@ -477,7 +461,6 @@ export default function ProjectDetailPage() {
                   className="bg-black/30 backdrop-blur-sm rounded-2xl p-6 border border-blue-900/30 hover:border-cyan-400/50 transition-all duration-300 hover:scale-105 cursor-pointer group"
                   onClick={() => handleTierSelect(tier)}
                 >
-                  {/* NFT Preview */}
                   <div className="relative mb-4">
                     <Image
                       src={tier.nftDetails.imageUrl}
@@ -497,7 +480,6 @@ export default function ProjectDetailPage() {
                   </div>
                   <p className="text-blue-200 text-sm mb-4">{tier.description}</p>
 
-                  {/* Rewards */}
                   <div className="mb-4">
                     <h4 className="text-sm font-semibold text-white mb-2">Rewards Include:</h4>
                     <ul className="space-y-1">
@@ -513,7 +495,6 @@ export default function ProjectDetailPage() {
                     </ul>
                   </div>
 
-                  {/* Backers Info */}
                   <div className="flex justify-between items-center text-xs text-blue-300">
                     <span>{tier.currentBackers} backers</span>
                     {tier.maxBackers && (
@@ -521,7 +502,6 @@ export default function ProjectDetailPage() {
                     )}
                   </div>
 
-                  {/* Hover Effect */}
                   <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
                     <div className="text-center py-2 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-lg text-white font-semibold">
                       Select This Tier
@@ -533,13 +513,11 @@ export default function ProjectDetailPage() {
           </div>
         </div>
 
-        {/* Pledge Modal */}
         {showPledgeModal && selectedTier && (
           <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
             <div className="bg-slate-900/90 backdrop-blur-md rounded-2xl p-6 max-w-md w-full border border-blue-900/50">
               <h3 className="text-2xl font-bold text-white mb-4">{selectedTier.name}</h3>
               
-              {/* NFT Preview */}
               <div className="mb-4">
                 <Image
                   src={selectedTier.nftDetails.imageUrl}
@@ -555,7 +533,7 @@ export default function ProjectDetailPage() {
                 <label className="block text-sm font-medium text-blue-200 mb-2">
                   Pledge Amount (${selectedTier.minAmount} - ${selectedTier.maxAmount})
                 </label>
-                <input
+                <Input
                   type="number"
                   min={selectedTier.minAmount}
                   max={selectedTier.maxAmount}
@@ -565,7 +543,6 @@ export default function ProjectDetailPage() {
                 />
               </div>
 
-              {/* Wallet Info */}
               <div className="mb-4 p-3 bg-black/30 rounded-lg">
                 <div className="text-xs text-blue-300">NFT will be sent to:</div>
                 <div className="text-sm font-mono text-white truncate">
@@ -578,20 +555,20 @@ export default function ProjectDetailPage() {
               </div>
 
               <div className="flex space-x-3">
-                <button
+                <Button
                   onClick={() => setShowPledgeModal(false)}
                   className="flex-1 px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors"
                   disabled={pledging}
                 >
                   Cancel
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={handlePledge}
                   disabled={pledging || !currentAccount}
                   className="flex-1 px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white rounded-lg font-semibold transition-all disabled:opacity-50"
                 >
                   {pledging ? "Processing..." : `Pledge $${pledgeAmount}`}
-                </button>
+                </Button>
               </div>
             </div>
           </div>

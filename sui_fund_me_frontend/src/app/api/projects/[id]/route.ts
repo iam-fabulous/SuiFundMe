@@ -34,11 +34,10 @@ export async function GET(
   try {
     const { id } = await params;
 
-    // Try fetching from chain
     const project = await fetchProjectById(id);
+
     if (project) return NextResponse.json(project);
 
-    // Otherwise fallback to mock
     if (mockProjects[id]) return NextResponse.json(mockProjects[id]);
 
     return NextResponse.json({ error: "Project not found" }, { status: 404 });

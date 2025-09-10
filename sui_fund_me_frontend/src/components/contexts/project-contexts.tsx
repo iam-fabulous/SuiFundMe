@@ -19,6 +19,8 @@ export interface ProjectState {
     title: string
     description: string
   }
+  fundingGoal: string
+  duration: string 
   rewardTiers: RewardTier[]
   isComplete: boolean
 }
@@ -27,6 +29,8 @@ type ProjectAction =
   | { type: "SET_STEP"; step: number }
   | { type: "SET_FILES"; files: File[] }
   | { type: "SET_PROJECT_DETAILS"; details: { title: string; description: string } }
+  | { type: "SET_FUNDING_GOAL"; goal: string }
+  | { type: "SET_DURATION"; duration: string }
   | { type: "SET_REWARD_TIERS"; tiers: RewardTier[] }
   | { type: "RESET_PROJECT" }
   | { type: "COMPLETE_PROJECT" }
@@ -38,6 +42,8 @@ const initialState: ProjectState = {
     title: "",
     description: "",
   },
+  fundingGoal: "",
+  duration: "",
   rewardTiers: [
     {
       id: "1",
@@ -59,6 +65,10 @@ function projectReducer(state: ProjectState, action: ProjectAction): ProjectStat
       return { ...state, files: action.files }
     case "SET_PROJECT_DETAILS":
       return { ...state, projectDetails: action.details }
+    case "SET_FUNDING_GOAL":
+      return { ...state, fundingGoal: action.goal }
+    case "SET_DURATION":
+      return { ...state, duration: action.duration }
     case "SET_REWARD_TIERS":
       return { ...state, rewardTiers: action.tiers }
     case "COMPLETE_PROJECT":
@@ -84,18 +94,23 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     (step: number): boolean => {
       switch (step) {
         case 1:
-          return state.files.length > 0
+          return state.files.length === 1
         case 2:
-          return state.projectDetails.title.trim() !== "" && state.projectDetails.description.trim() !== ""
+          return state.projectDetails.title.trim() !== "" &&
+                 state.projectDetails.description.trim() !== "" &&
+                 state.fundingGoal.trim() !== "" &&
+                 state.duration.trim() !== ""
         case 3:
           return state.rewardTiers.some(
             (tier) => tier.title.trim() !== "" && tier.amount.trim() !== "" && tier.description.trim() !== "",
           )
         case 4:
           return (
-            state.files.length > 0 &&
+            state.files.length === 1 && // Ensure exactly one file
             state.projectDetails.title.trim() !== "" &&
             state.projectDetails.description.trim() !== "" &&
+            state.fundingGoal.trim() !== "" &&
+            state.duration.trim() !== "" &&
             state.rewardTiers.some(
               (tier) => tier.title.trim() !== "" && tier.amount.trim() !== "" && tier.description.trim() !== "",
             )
@@ -104,7 +119,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
           return false
       }
     },
-    [state.files.length, state.projectDetails.title, state.projectDetails.description, state.rewardTiers],
+    [state.files.length, state.projectDetails.title, state.projectDetails.description, state.fundingGoal, state.duration, state.rewardTiers],
   )
 
   const canProceedToStep = useCallback(

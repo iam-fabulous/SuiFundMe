@@ -76,7 +76,7 @@ export default function RewardTiersPage() {
 
         <div className="mt-8">
           <div className="bg-card rounded-lg p-6 border border-border">
-            <h2 className="text-xl font-bold text-card-foreground mb-4">Reward Tiers</h2>
+            <h2 className="text-xl font-bold text-card-foreground mb-4">Tiers</h2>
             <p className="text-muted-foreground font-semibold mb-6">
               Create reward tiers to incentivize your backers. Each tier should offer something valuable in return for
               their support.

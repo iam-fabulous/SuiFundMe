@@ -106,6 +106,7 @@
 import { useState, useCallback, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Upload, X, FileText, Image, Video, CheckCircle, AlertCircle } from "lucide-react"
+import { Input } from "../ui/input"
 
 interface FileUploadProps {
   onFilesChange: (files: File[]) => void
@@ -291,7 +292,7 @@ export function FileUpload({
             />
           </motion.button>
 
-          <input
+          <Input
             ref={fileInputRef}
             type="file"
             multiple

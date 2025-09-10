@@ -83,13 +83,12 @@
 
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { Search, TrendingUp, Clock, Target, Zap, Users, Globe } from "lucide-react";
-// import ProjectCard from "../../../components/project-card";
 import Image from "next/image";
+import { motion } from "framer-motion";
 import { ExternalLink } from "lucide-react";
 import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { Search, TrendingUp, Clock, Target, Zap, Users, Globe } from "lucide-react";
 
 
 
@@ -106,7 +105,6 @@ interface Project {
   raisedAmount: number;
 }
 
-// Enhanced mock projects with better data
 const mockProjects: Project[] = [
   {
     id: "mock-1",
