@@ -16,7 +16,7 @@ type ProjectFields = {
 const NETWORK = process.env.NEXT_PUBLIC_SUI_NETWORK || 'testnet';
 const client = new SuiClient({ url: getFullnodeUrl(NETWORK as 'testnet' | 'mainnet') });
 const PROJECT_MOVE_TYPE =
-  "0xc01e453d27f18bb7ca4afb033f97cb3dac6eb3fa56c9f78cee56bccc8062efc4::suifundme_smartcontract::Project";
+  "0xc01e453d27f18bb7ca4afb033f97cb3dac6eb3fa56c9f78cee56bccc8062efc4::suifundme_smartcontract";
 
   type SignAndExecuteFn = (args: { transaction: Transaction }) => Promise<{ digest: string }>;
 export type ChainProject = {

@@ -16,7 +16,7 @@ export default function Providers({ children }: { children: ReactNode }) {
         }}
         defaultNetwork="testnet"
       >
-        <WalletProvider>
+        <WalletProvider autoConnect={false}>
           <ProjectProvider>
             {children}
           </ProjectProvider>
