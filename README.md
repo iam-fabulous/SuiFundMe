@@ -1,8 +1,4 @@
 
-# Project Title
-
-A brief description of what this project does and who it's for
-
 # SuiFundMe
 
 Product Requirements Document (PRD): Sui FundMe- Decentralised Crowdfunding on Sui

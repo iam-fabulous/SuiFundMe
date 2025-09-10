@@ -1,0 +1,9 @@
+build/*
+.trace
+.coverage*
+
+# Ignore frontend folder
+sui_fund_me_frontend/
+
+# Ignore ENV files
+.env

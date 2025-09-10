@@ -1,0 +1,10 @@
+# Ignore frontend folder
+sui_fund_me_frontend/
+
+# Ignore ENV files
+.env
+.idea
+
+build/*
+.trace
+.coverage*
