@@ -63,7 +63,7 @@ export function RewardTier({ tier, index, onUpdate, onRemove, canRemove }: Rewar
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <div>
           <Label htmlFor={`amount-${tier.id}`} className="text-foreground font-bold">
-            Reward Amount
+            Amount
           </Label>
           <div className="relative mt-2">
             <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">$</span>
@@ -80,7 +80,7 @@ export function RewardTier({ tier, index, onUpdate, onRemove, canRemove }: Rewar
 
         <div>
           <Label htmlFor={`title-${tier.id}`} className="text-foreground font-bold">
-            Reward Title
+            Title
           </Label>
           <Input
             id={`title-${tier.id}`}

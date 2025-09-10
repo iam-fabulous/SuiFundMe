@@ -1,49 +1,15 @@
-// import type { Metadata } from "next";
-// import { Geist, Geist_Mono } from "next/font/google";
-// import "./globals.css";
-// import React from "react";
-
-// // import Navbar from "../components/navbar";
-// // import Providers from "../components/providers";
-
-// const geistSans = Geist({
-//   variable: "--font-geist-sans",
-//   subsets: ["latin"],
-// });
-
-// const geistMono = Geist_Mono({
-//   variable: "--font-geist-mono",
-//   subsets: ["latin"],
-// });
-
-// export const metadata: Metadata = {
-//   title: "SUI Fund Me",
-//   description: "SUi Fund me is design for fund raising",
-// };
-
-
-// export default function RootLayout({
-//   children,
-// }: Readonly<{
-//   children: React.ReactNode;
-// }>) {
-//   return (
-//     <html lang="en">
-//       <body
-//         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-//       >
-//         {children}
-//       </body>
-//     </html>
-//   );
-// }
-
 import './globals.css'
+import type { Metadata } from "next";
 import { Inter } from 'next/font/google'
-import Providers from '../app/providers'
+import Providers from '../components/providers'
 import '@mysten/dapp-kit/dist/index.css'
 
 const inter = Inter({ subsets: ['latin'] })
+
+export const metadata: Metadata = {
+  title: "SUI Fund Me",
+  description: "SUI Fund me is designed for fund raising",
+};
 
 export default function RootLayout({
   children,

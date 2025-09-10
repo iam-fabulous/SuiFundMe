@@ -1,12 +1,20 @@
 // src/lib/sui.ts
-import { SuiClient, getFullnodeUrl, SuiObjectResponse, SuiParsedData } from "@mysten/sui/client";
-import { Transaction } from "@mysten/sui/transactions";
 import { bcs } from '@mysten/sui/bcs';
+import { Transaction } from "@mysten/sui/transactions";
+import { SuiClient, getFullnodeUrl, SuiObjectResponse, SuiParsedData } from "@mysten/sui/client";
 
-// import { Signer } from '@mysten/sui.js/cryptography';
-// import { useSignAndExecuteTransaction } from '@mysten/dapp-kit';
 
-const client = new SuiClient({ url: getFullnodeUrl("testnet") });
+type ProjectFields = {
+  description?: number[];
+  goal?: number | string;
+  balance?: number | string | { fields?: { value?: number } };
+  end_time?: number | string;
+  media_blob_id?: number[];
+  creator?: string;
+};
+
+const NETWORK = process.env.NEXT_PUBLIC_SUI_NETWORK || 'testnet';
+const client = new SuiClient({ url: getFullnodeUrl(NETWORK as 'testnet' | 'mainnet') });
 const PROJECT_MOVE_TYPE =
   "0xc01e453d27f18bb7ca4afb033f97cb3dac6eb3fa56c9f78cee56bccc8062efc4::suifundme_smartcontract::Project";
 
@@ -46,7 +54,6 @@ export interface SuiOwnedObject {
   };
 }
 
-// ---------------- MOCK PROJECTS ----------------
 const mockProjects: Record<string, ChainProject> = {
   "1": {
     id: "1",
@@ -98,20 +105,18 @@ const mockProjects: Record<string, ChainProject> = {
   },
 };
 
-// ---------------- FETCH ALL PROJECTS ----------------
 export async function fetchProjectsFromChain(): Promise<ChainProject[]> {
   try {
-    console.log("🔗 Fetching projects from Sui...");
+    console.log("🔗 Fetching projects from Sui blockchain...");
 
     const objs = await client.getOwnedObjects({
-      owner: "0xYourPublisherAddr", // TODO: replace with your publisher address
+      owner: "0xYourPublisherAddr", 
       options: { showContent: true },
     });
 
     const projects: ChainProject[] = objs.data.map((obj: SuiObjectResponse, idx: number) => {
       const content = obj.data?.content as SuiParsedData | undefined;
 
-      // Only handle moveObject types
       if (content?.dataType === "moveObject") {
         const fields = content.fields as SuiObjectField;
 
@@ -128,7 +133,6 @@ export async function fetchProjectsFromChain(): Promise<ChainProject[]> {
         };
       }
 
-      // fallback → unknown object, skip
       return {
         id: obj.data?.objectId ?? `chain-${idx}`,
         name: "Unknown Project",
@@ -142,14 +146,16 @@ export async function fetchProjectsFromChain(): Promise<ChainProject[]> {
       };
     });
 
-    return [...projects, ...Object.values(mockProjects)];
+    return projects;
+
   } catch (err) {
-    console.error("❌ Error fetching from Sui, using mocks:", err);
+    console.error("❌ Critical error in fetchProjectsFromChain:", err);
     return Object.values(mockProjects);
   }
 }
 
-// ---------------- FETCH SINGLE PROJECT ----------------
+
+
 export async function fetchProjectById(
   projectId: string
 ): Promise<ChainProject | null> {
@@ -161,24 +167,46 @@ export async function fetchProjectById(
       options: { showContent: true },
     });
 
-    const content = obj.data?.content as SuiObjectContent | undefined;
+    const content = obj.data?.content;
     if (content?.dataType === "moveObject") {
-      const fields = content.fields ?? {};
+      const fields = content.fields as ProjectFields;
+
+      const descriptionText = fields?.description
+        ? new TextDecoder().decode(new Uint8Array(fields.description))
+        : "No description available";
+
+      const goal = Number(fields?.goal ?? 0);
+      const balance = Number(fields?.balance ?? 0);
+      const fundedPercent = goal > 0 ? Math.round((balance / goal) * 100) : 0;
+
+      const endTime = Number(fields?.end_time ?? 0);
+      const currentTime = Date.now();
+      const daysLeft = Math.max(0, Math.ceil((endTime - currentTime) / (1000 * 60 * 60 * 24)));
+
+      const mediaBlobId = fields?.media_blob_id;
+      let imageUrl = "/images/project-placeholder.jpg";
+      if (mediaBlobId && Array.isArray(mediaBlobId)) {
+        try {
+          const blobIdHex = Array.from(mediaBlobId, byte => byte.toString(16).padStart(2, '0')).join('');
+          imageUrl = `https://aggregator.walrus-testnet.sui.io/v1/blobs/${blobIdHex}`;
+        } catch {
+          console.log("Could not parse media blob ID");
+        }
+      }
 
       return {
         id: obj.data?.objectId ?? projectId,
-        name: fields?.name ?? "Unnamed Project",
-        imageUrl: fields?.image_url ?? "/images/project-placeholder.jpg",
-        funded: Number(fields?.funded_percent ?? 0),
-        daysLeft: Number(fields?.days_left ?? 0),
-        description: fields?.description ?? "No description available",
-        creator: fields?.creator ?? "Unknown",
-        goalAmount: Number(fields?.goal_amount ?? 0),
-        raisedAmount: Number(fields?.raised_amount ?? 0),
+        name: descriptionText.length > 60 ? `${descriptionText.substring(0, 60)}...` : descriptionText,
+        imageUrl,
+        funded: fundedPercent,
+        daysLeft,
+        description: descriptionText,
+        creator: fields.creator ?? "Unknown",
+        goalAmount: Math.floor(goal / 1e9),
+        raisedAmount: Math.floor(balance / 1e9),
       };
     }
 
-    // fallback mock
     return mockProjects[projectId] ?? null;
   } catch (err) {
     console.error(`❌ Error fetching project ${projectId}:`, err);
@@ -186,8 +214,6 @@ export async function fetchProjectById(
   }
 }
 
-
-// ---------------- PLEDGE TO PROJECT ----------------
 export async function pledgeToProject(
   projectId: string,
   amount: number,
